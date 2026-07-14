@@ -1,6 +1,6 @@
 import type { Context as HonoContext } from "hono"
 import type { ContentfulStatusCode } from "hono/utils/http-status"
-import { db } from "../db"
+import { db } from "../../db"
 import { ERROR_RESPONSES } from "./constants"
 
 export const contextVariables = {

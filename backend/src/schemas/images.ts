@@ -1,5 +1,5 @@
 import z from "zod"
-import { MAXIMUM_FILE_SIZE } from "../lib/constants"
+import { MAXIMUM_FILE_SIZE } from "../lib/storage/constants"
 
 export const image = z
   .file("file-invalid-type")

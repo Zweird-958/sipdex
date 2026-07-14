@@ -11,7 +11,7 @@ import {
   tastings,
   users,
 } from "../src/db/schema"
-import { resolveCountry } from "../src/lib/countries"
+import { resolveCountry } from "../src/lib/countries/resolve-country"
 import { uploadImage } from "../src/storage"
 
 const COUNTRY_INPUTS = [

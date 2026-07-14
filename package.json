@@ -6,6 +6,8 @@
     "dev": "pnpm --filter @fantadex/backend dev",
     "start": "pnpm --filter @fantadex/backend start",
     "typecheck": "pnpm --filter @fantadex/backend typecheck",
+    "test:unit": "pnpm --filter @fantadex/backend test:unit",
+    "test:integration": "pnpm --filter @fantadex/backend test:integration",
     "lint": "pnpm --filter @fantadex/backend lint",
     "lint:fix": "pnpm --filter @fantadex/backend lint:fix",
     "format": "prettier --check .",

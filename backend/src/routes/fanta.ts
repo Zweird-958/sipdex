@@ -1,18 +1,16 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { isAuthorized } from "../handlers/is-authorized"
-import { HTTP_CREATED_STATUS } from "../lib/constants"
-import { slugify } from "../lib/slugify"
+import { filterCountriesByIds } from "../lib/countries/filter-countries-by-ids"
+import { createFanta } from "../lib/fanta/create-fanta"
+import { getFanta } from "../lib/fanta/get-fanta"
+import { isFlavourExisting } from "../lib/fanta/is-flavour-existing"
+import { listFanta } from "../lib/fanta/list-fanta"
+import { HTTP_CREATED_STATUS } from "../lib/http/constants"
+import { slugify } from "../lib/slugify/slugify"
 import { optionalAuth } from "../middleware/auth"
 import { idParamSchema } from "../schemas/common"
 import { createFantaSchema } from "../schemas/fanta"
-import { filterCountriesByIds } from "../services/countries"
-import {
-  createFanta,
-  getFanta,
-  isFlavourExisting,
-  listFanta,
-} from "../services/fanta"
 import { uploadImage } from "../storage"
 import type { AppEnv } from "../types/http"
 

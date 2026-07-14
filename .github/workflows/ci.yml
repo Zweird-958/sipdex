@@ -50,3 +50,59 @@ jobs:
 
       - name: Knip
         run: pnpm run knip
+
+  test-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/setup
+
+      - name: Unit tests
+        run: pnpm run test:unit
+
+  test-integration:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: fantadex
+          POSTGRES_PASSWORD: fantadex
+          POSTGRES_DB: fantadex_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fantadex -d fantadex_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # The integration suite only talks to Postgres; the S3 values just need to
+      # satisfy src/env.ts validation (no S3 calls are made).
+      DATABASE_URL: postgresql://fantadex:fantadex@localhost:5432/fantadex_test
+      DATABASE_URL_TEST: postgresql://fantadex:fantadex@localhost:5432/fantadex_test
+      BETTER_AUTH_SECRET: test-secret
+      BASE_URL: http://localhost:3000
+      S3_URL: http://localhost:9000
+      S3_BUCKET_NAME: test-bucket
+      S3_ACCESS_KEY_ID: test-access-key
+      S3_SECRET_ACCESS_KEY: test-secret-key
+      S3_PUBLIC_URL: http://localhost:9000/test-bucket/
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/setup
+
+      # Create the schema before `test:integration`, whose first step (db:reset)
+      # fails against a database that has no tables yet.
+      - name: Migrate test database
+        run: NODE_ENV=test pnpm run db:migrate
+
+      - name: Integration tests
+        run: pnpm run test:integration

@@ -13,11 +13,4 @@ export const ERROR_RESPONSES = {
   },
 } satisfies Record<string, { message: string; code: StatusCode; key: string }>
 
-export const SQL_ERROR_CODES = {
-  UNIQUE_VIOLATION: "23505",
-} as const
-
-// 5MB
-export const MAXIMUM_FILE_SIZE = 5_000_000
-
 export const HTTP_CREATED_STATUS = 201
