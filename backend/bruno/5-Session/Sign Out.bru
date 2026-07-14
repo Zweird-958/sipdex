@@ -1,0 +1,23 @@
+meta {
+  name: Sign Out
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/auth/sign-out
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {}
+}
+
+docs {
+  Invalidates the session tied to the supplied bearer token.
+}

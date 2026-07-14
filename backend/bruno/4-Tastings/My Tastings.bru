@@ -1,0 +1,20 @@
+meta {
+  name: My Tastings
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/tastings
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+docs {
+  The logged-in user's tasted list under `result`. Requires the `tastings:list`
+  permission. 401 if not authenticated.
+}

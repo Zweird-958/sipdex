@@ -1,0 +1,42 @@
+meta {
+  name: Create Fanta
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/fanta
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+body:multipart-form {
+  flavour: Orange
+  countryCodes: {{countryCodes}}
+  image: @file(sample.png)
+}
+
+script:post-response {
+  // Remember the created fanta's id for Get Fanta + the Tastings requests.
+  const fanta = res.getBody()?.result;
+  if (fanta?.id) {
+    bru.setEnvVar("fantaId", fanta.id);
+  }
+}
+
+docs {
+  Requires the `fanta:create` permission (admin). multipart/form-data:
+    - flavour       (string, required, unique)
+    - countryCodes  (ISO codes, comma-separated — e.g. "DE,FR"; must exist)
+    - image         (file, required — png or jpeg, max 5 MB)
+
+  `countryCodes` defaults to `{{countryCodes}}` from the Local environment
+  (`DE,FR`, both created by `pnpm seed`). The sample image lives at the
+  collection root (sample.png). Returns 409 if the flavour already exists,
+  403 for non-admins. Saves the created fanta's id (from `result.id`) to
+  `fantaId`.
+}

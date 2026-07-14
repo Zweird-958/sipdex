@@ -1,0 +1,29 @@
+meta {
+  name: Create Country
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/countries
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+    "name": "US"
+  }
+}
+
+docs {
+  Requires the `countries:create` permission (admin). `name` is validated against
+  the ISO 3166 list and accepts either a country name ("Germany") or an ISO code
+  ("DE" / "DEU"); the response stores the canonical name + alpha-2 code. Returns
+  400 for unknown countries, 409 for duplicates, 403 for non-admins. The created
+  country is under `result` in the response body.
+}

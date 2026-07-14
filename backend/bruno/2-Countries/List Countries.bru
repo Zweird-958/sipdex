@@ -1,0 +1,15 @@
+meta {
+  name: List Countries
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/countries
+  body: none
+  auth: none
+}
+
+docs {
+  Public. Lists every available country (id, name, ISO code) under `result`.
+}

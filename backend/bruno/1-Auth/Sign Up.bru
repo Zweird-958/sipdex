@@ -1,0 +1,26 @@
+meta {
+  name: Sign Up
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/sign-up/email
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{email}}",
+    "password": "{{password}}",
+    "name": "{{name}}"
+  }
+}
+
+docs {
+  Registers the account. Optional if you ran `pnpm seed` (which already creates
+  it) — re-running once it exists returns a 422 (already registered). New
+  accounts default to the `user` role; promote with `pnpm make-admin <email>`
+  to use the admin-only endpoints.
+}

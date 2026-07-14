@@ -1,0 +1,8 @@
+echo "→ typecheck"
+pnpm typecheck || exit 1
+
+echo "→ prettier format check"
+pnpm format || exit 1
+
+echo "→ eslint"
+pnpm lint || exit 1

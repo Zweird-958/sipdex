@@ -1,0 +1,37 @@
+meta {
+  name: Sign In
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/sign-in/email
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{email}}",
+    "password": "{{password}}"
+  }
+}
+
+vars:pre-request {
+  email: admin@fantadex.io
+  password: Password123!
+}
+
+script:post-response {
+  const token = res.getHeader("set-auth-token");
+  if (token) {
+    bru.setEnvVar("token", token);
+    console.log("Saved token");
+  }
+}
+
+docs {
+  Signs in and saves the bearer token to the `token` env var, used by every
+  authenticated request. Admin-only endpoints (create country / fanta) require
+  the account to be an admin — run `pnpm seed` or `pnpm make-admin <email>`.
+}
