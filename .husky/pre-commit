@@ -6,3 +6,6 @@ pnpm format || exit 1
 
 echo "→ eslint"
 pnpm lint || exit 1
+
+echo "→ knip"
+pnpm knip || exit 1
