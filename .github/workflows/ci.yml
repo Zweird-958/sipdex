@@ -48,5 +48,5 @@ jobs:
       - name: Setup
         uses: ./.github/setup
 
-      - name: Lint
+      - name: Knip
         run: pnpm run knip
