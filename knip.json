@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignoreExportsUsedInFile": true,
   "workspaces": {
-    "backend": {
+    "packages/api": {
       "entry": ["scripts/*.ts"],
       "ignoreDependencies": ["pino-pretty"]
     }

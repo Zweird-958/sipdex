@@ -48,3 +48,5 @@ export const createApp = () => {
 
   return app
 }
+
+export type AppType = ReturnType<typeof createApp>

@@ -1,13 +1,27 @@
 # deps
 node_modules/
 
+# turbo
+.turbo/
+
+# build output
+dist/
+
+# docker data (postgres + rustfs)
+data/
+
+# env
+.env
+.env.production
+**/.env
+
 # logs
 *.log
 
 # misc
 .DS_Store
 
+
+.vercel
 .claude
-.turbo
-data
-.env
+.superpowers
