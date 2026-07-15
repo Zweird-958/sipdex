@@ -17,6 +17,15 @@ export default defineConfig({
       {
         extends: true,
         test: {
+          name: "api",
+          include: ["tests/api/**/*.{test,spec}.{ts,tsx,js,jsx}"],
+          environment: "node",
+          setupFiles: ["./tests/setup-env.ts"],
+        },
+      },
+      {
+        extends: true,
+        test: {
           name: "integration",
           include: ["tests/integrations/**/*.{test,spec}.{ts,tsx,js,jsx}"],
           environment: "node",

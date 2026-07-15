@@ -12,3 +12,6 @@ pnpm knip || exit 1
 
 echo "→ unit tests"
 pnpm test:unit || exit 1
+
+echo "→ api tests"
+pnpm test:api || exit 1
