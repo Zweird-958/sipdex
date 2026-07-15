@@ -5,6 +5,19 @@
     "packages/api": {
       "entry": ["scripts/*.ts"],
       "ignoreDependencies": ["pino-pretty"]
+    },
+    "apps/mobile": {
+      "entry": [
+        "src/app/**/*.tsx",
+        "src/lib/api.ts",
+        "metro.config.js",
+        "babel.config.js"
+      ],
+      "ignoreDependencies": [
+        "react-native-worklets",
+        "react-native-css-interop",
+        "expo-updates"
+      ]
     }
   }
 }

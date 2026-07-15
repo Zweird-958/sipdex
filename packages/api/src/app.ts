@@ -34,9 +34,10 @@ export const createApp = () => {
 
   app.on(["GET", "POST"], "/auth/*", (c) => auth.handler(c.req.raw))
 
-  app.route("/fanta", fantaRoutes)
-  app.route("/countries", countriesRoutes)
-  app.route("/", tastingsRoutes)
+  const routes = app
+    .route("/fanta", fantaRoutes)
+    .route("/countries", countriesRoutes)
+    .route("/", tastingsRoutes)
 
   app.onError((err, { var: { fail: cFail, logger: cLogger } }) => {
     cLogger.error({ err }, "Unhandled error")
@@ -46,7 +47,7 @@ export const createApp = () => {
 
   app.notFound(({ var: { fail: cFail } }) => cFail("notFound"))
 
-  return app
+  return routes
 }
 
 export type AppType = ReturnType<typeof createApp>
