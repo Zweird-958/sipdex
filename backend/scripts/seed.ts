@@ -115,9 +115,17 @@ const seedFanta = async (
 const seedUsers = () =>
   Promise.all(
     USER_SEED.map(async ({ name, email, password, role }) => {
-      const { user } = await auth.api.signUpEmail({
+      await auth.api.signUpEmail({
         body: { name, email, password },
       })
+
+      const user = await db.query.users.findFirst({
+        where: eq(users.email, email),
+      })
+
+      if (!user) {
+        throw new Error(`User not found after sign-up: ${email}`)
+      }
 
       if (role === "admin") {
         await db.update(users).set({ role }).where(eq(users.id, user.id))

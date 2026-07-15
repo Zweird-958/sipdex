@@ -6,6 +6,7 @@
     "start": "tsx src/index.ts",
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run --project unit",
+    "test:api": "vitest run --project api",
     "test:integration": "NODE_ENV=test pnpm run db:reset && NODE_ENV=test pnpm run db:migrate && NODE_ENV=test vitest run --project integration",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
