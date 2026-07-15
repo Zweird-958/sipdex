@@ -1,0 +1,24 @@
+{
+  "name": "@fantadex/eslint",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./base": "./base.js"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint-plugin-turbo": "^2.5.0",
+    "globals": "^17.7.0",
+    "typescript-eslint": "^8.63.0"
+  },
+  "devDependencies": {
+    "@fantadex/typescript": "workspace:*",
+    "eslint": "catalog:",
+    "typescript": "catalog:"
+  }
+}

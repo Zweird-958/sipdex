@@ -1,0 +1,10 @@
+{
+  "extends": "@fantadex/typescript/internal-package.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+    "noUncheckedIndexedAccess": false
+  },
+  "include": ["*.ts", "*.mts", "src", "scripts", "tests"],
+  "exclude": ["node_modules", "dist", "data", "drizzle"]
+}

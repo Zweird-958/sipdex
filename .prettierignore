@@ -1,7 +1,8 @@
 node_modules
 **/node_modules
 **/dist
-backend/data
-backend/drizzle
+.turbo
+data
+packages/api/drizzle
 pnpm-lock.yaml
 .husky/_

@@ -1,16 +1,26 @@
+/// <reference types="./types.d.ts" />
 import eslint from "@eslint/js"
-import { defineConfig } from "eslint/config"
+import turboPlugin from "eslint-plugin-turbo"
 import globals from "globals"
 import tseslint from "typescript-eslint"
 
-export default defineConfig(
-  eslint.configs.recommended,
-  tseslint.configs.recommended,
-  tseslint.configs.recommendedTypeChecked,
-  tseslint.configs.stylisticTypeChecked,
+export default tseslint.config(
   {
-    files: ["**/*.js", "**/*.ts"],
+    ignores: ["**/*.config.*"],
+  },
+  {
+    files: ["**/*.js", "**/*.ts", "**/*.tsx"],
+    plugins: {
+      turbo: turboPlugin,
+    },
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
+      ...tseslint.configs.stylisticTypeChecked,
+    ],
     rules: {
+      ...turboPlugin.configs.recommended.rules,
       "array-callback-return": [
         "error",
         {
@@ -232,15 +242,13 @@ export default defineConfig(
     },
   },
   {
+    linterOptions: { reportUnusedDisableDirectives: true },
     languageOptions: {
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: ["eslint.config.mjs"],
-        },
-        tsconfigRootDir: import.meta.dirname,
-      },
       globals: {
         ...globals.node,
+      },
+      parserOptions: {
+        project: true,
       },
     },
   },
