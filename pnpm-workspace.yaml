@@ -1,4 +1,11 @@
 packages:
   - backend
+  - "tooling/*"
+
+catalog:
+  typescript: ^5.8.3
+  eslint: ^10.7.0
+  "@types/node": ^20.11.17
+
 allowBuilds:
   esbuild: true
