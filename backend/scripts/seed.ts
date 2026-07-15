@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import "dotenv/config"
 import { eq } from "drizzle-orm"
 import { readFile } from "node:fs/promises"
@@ -12,6 +11,7 @@ import {
   users,
 } from "../src/db/schema"
 import { resolveCountry } from "../src/lib/countries/resolve-country"
+import { logger } from "../src/lib/logger/logger"
 import { uploadImage } from "../src/storage"
 
 const COUNTRY_INPUTS = [
@@ -148,32 +148,32 @@ const seedTastings = async (userIds: string[], fantaIds: string[]) => {
 }
 
 const main = async () => {
-  console.log("🧹 Clearing existing data...")
+  logger.info("🧹 Clearing existing data...")
   await clearData()
 
-  console.log("🪣 Ensuring bucket + uploading shared Fanta image...")
+  logger.info("🪣 Ensuring bucket + uploading shared Fanta image...")
   const imageKey = await uploadSeedImage()
 
-  console.log("🌍 Seeding 7 countries...")
+  logger.info("🌍 Seeding 7 countries...")
   const countryIdByCode = await seedCountries()
 
-  console.log("👤 Seeding 2 users (1 admin, 1 default)...")
+  logger.info("👤 Seeding 2 users (1 admin, 1 default)...")
   const userIds = await seedUsers()
 
-  console.log("🥤 Seeding 5 Fanta...")
+  logger.info("🥤 Seeding 5 Fanta...")
   const fantaIds = await seedFanta(countryIdByCode, imageKey)
 
-  console.log("😋 Seeding 3 tastings per user...")
+  logger.info("😋 Seeding 3 tastings per user...")
   await seedTastings(userIds, fantaIds)
 
-  console.log("✅ Seed complete")
-  console.log("   Admin: admin@fantadex.io / Password123!")
-  console.log("   User:  user@fantadex.io / Password123!")
+  logger.info("✅ Seed complete")
+  logger.info("   Admin: admin@fantadex.io / Password123!")
+  logger.info("   User:  user@fantadex.io / Password123!")
 
   await pool.end()
 }
 
-main().catch((error: unknown) => {
-  console.error(error)
+main().catch((err: unknown) => {
+  logger.error({ err }, "Seed failed")
   process.exit(1)
 })

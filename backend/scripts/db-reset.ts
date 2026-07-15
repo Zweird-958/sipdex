@@ -1,10 +1,10 @@
-/* eslint-disable no-console */
 import { reset as drizzleReset } from "drizzle-seed"
 import { db } from "../src/db"
 import * as schema from "../src/db/schema"
+import { logger } from "../src/lib/logger/logger"
 
 const reset = async () => {
-  console.log("Resetting database...")
+  logger.info("Resetting database...")
 
   await drizzleReset(db, schema)
 

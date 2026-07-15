@@ -3,7 +3,8 @@
   "ignoreExportsUsedInFile": true,
   "workspaces": {
     "backend": {
-      "entry": ["scripts/*.ts"]
+      "entry": ["scripts/*.ts"],
+      "ignoreDependencies": ["pino-pretty"]
     }
   }
 }
