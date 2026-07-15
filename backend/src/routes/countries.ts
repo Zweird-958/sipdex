@@ -1,11 +1,13 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { isAuthorized } from "../handlers/is-authorized"
-import { HTTP_CREATED_STATUS, SQL_ERROR_CODES } from "../lib/constants"
-import { resolveCountry } from "../lib/countries"
-import { getSqlErrorCode } from "../lib/sql"
+import { createCountry } from "../lib/countries/create-country"
+import { getCountries } from "../lib/countries/get-countries"
+import { resolveCountry } from "../lib/countries/resolve-country"
+import { HTTP_CREATED_STATUS } from "../lib/http/constants"
+import { SQL_ERROR_CODES } from "../lib/sql/constants"
+import { getSqlErrorCode } from "../lib/sql/get-sql-error-code"
 import { createCountrySchema } from "../schemas/countries"
-import { createCountry, getCountries } from "../services/countries"
 import type { AppEnv } from "../types/http"
 
 export const countriesRoutes = new Hono<AppEnv>()

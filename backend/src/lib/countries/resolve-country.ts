@@ -1,6 +1,6 @@
 import countries from "i18n-iso-countries"
 import enLocale from "i18n-iso-countries/langs/en.json" with { type: "json" }
-import type { ResolvedCountry } from "../types/countries"
+import type { ResolvedCountry } from "../../types/countries"
 
 const LANGUAGE = "en"
 

@@ -1,6 +1,6 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3"
 import { env } from "./env"
-import { s3 } from "./lib/s3"
+import { s3 } from "./lib/storage/s3"
 import type { Image } from "./types/images"
 
 export const uploadImage = async ({

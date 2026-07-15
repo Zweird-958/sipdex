@@ -1,4 +1,4 @@
-import type { MaybePgError } from "../types/db"
+import type { MaybePgError } from "../../types/db"
 
 export const getSqlErrorCode = (error: unknown): string | null => {
   const err = error as MaybePgError

@@ -11,6 +11,12 @@
     "outDir": "./dist",
     "noEmit": true
   },
-  "include": ["src", "scripts", "drizzle.config.ts"],
+  "include": [
+    "src",
+    "scripts",
+    "tests",
+    "drizzle.config.ts",
+    "vitest.config.mts"
+  ],
   "exclude": ["node_modules", "dist", "data"]
 }

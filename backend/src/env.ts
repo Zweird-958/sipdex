@@ -5,8 +5,10 @@ import { z } from "zod"
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   BASE_URL: z.url().default("http://localhost:3000"),
+  IS_TEST: z.coerce.boolean().default(false),
 
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  DATABASE_URL_TEST: z.string().optional(),
 
   BETTER_AUTH_SECRET: z.string().min(1, "BETTER_AUTH_SECRET is required"),
   BETTER_AUTH_URL: z.url().default("http://localhost:3000"),
@@ -27,7 +29,10 @@ const envSchema = z.object({
   S3_PUBLIC_URL: z.string().endsWith("/"),
 })
 
-const parsed = envSchema.safeParse(process.env)
+const parsed = envSchema.safeParse({
+  ...process.env,
+  IS_TEST: process.env.NODE_ENV === "test",
+})
 
 if (!parsed.success) {
   console.error("❌ Invalid environment configuration:")

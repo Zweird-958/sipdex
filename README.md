@@ -15,7 +15,6 @@ A React Native / Expo app will be added later.
 
 - [ ] Add a React Native / Expo app
 - [ ] Add a web app (Vite + React + Tailwind)
-- [ ] Add unit tests (Vitest)
 - [ ] Setup Monorepo linting (ESLint, TypeScript, Turbo) [reference](https://github.com/Zweird-958/my-wishlist)
 - [ ] Setup logger
 - [ ] Verify email
@@ -23,6 +22,8 @@ A React Native / Expo app will be added later.
 - [ ] Handle zValidator errors in a more user-friendly way
 - [ ] Don't show when email is already in use (for security reasons)
 - [ ] Don't show all information about the user in sign-in
+- [ ] Add api tests
+- [ ] Create config file instead of env
 
 ## Getting started
 

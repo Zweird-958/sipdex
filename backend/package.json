@@ -5,10 +5,13 @@
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
     "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "NODE_ENV=test pnpm run db:reset && NODE_ENV=test pnpm run db:migrate && NODE_ENV=test vitest run --project integration",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "db:reset": "tsx scripts/db-reset.ts",
     "seed": "tsx scripts/seed.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -30,13 +33,16 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@faker-js/faker": "^10.5.0",
     "@types/node": "^20.11.17",
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
+    "drizzle-seed": "^0.3.1",
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.63.0"
+    "typescript-eslint": "^8.63.0",
+    "vitest": "^4.1.10"
   }
 }

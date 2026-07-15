@@ -1,10 +1,12 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { isAuthorized } from "../handlers/is-authorized"
-import { HTTP_CREATED_STATUS } from "../lib/constants"
+import { listTastedFanta } from "../lib/fanta/list-tasted-fanta"
+import { HTTP_CREATED_STATUS } from "../lib/http/constants"
+import { addTasting } from "../lib/tastings/add-tasting"
+import { fantaExists } from "../lib/tastings/fanta-exists"
+import { removeTasting } from "../lib/tastings/remove-tasting"
 import { idParamSchema } from "../schemas/common"
-import { listTastedFanta } from "../services/fanta"
-import { addTasting, fantaExists, removeTasting } from "../services/tastings"
 import type { AppEnv } from "../types/http"
 
 export const tastingsRoutes = new Hono<AppEnv>()

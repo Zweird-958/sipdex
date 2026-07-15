@@ -1,5 +1,5 @@
-import { getImageUrl } from "../storage"
-import type { FantaWithCountries } from "../types/fanta"
+import { getImageUrl } from "../../storage"
+import type { FantaWithCountries } from "../../types/fanta"
 
 export const formatFanta = (fanta: FantaWithCountries, tasted: boolean) => ({
   id: fanta.id,
