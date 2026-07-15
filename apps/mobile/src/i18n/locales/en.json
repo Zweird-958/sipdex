@@ -1,3 +1,13 @@
 {
-  "welcome": "Welcome to Fantadex"
+  "welcome": "Welcome to Fantadex",
+  "retry": "Retry",
+  "errors": {
+    "default": "Something went wrong",
+    "INTERNAL_ERROR": "A server error occurred",
+    "NOT_FOUND": "Not found",
+    "BAD_REQUEST": "Invalid request",
+    "CONFLICT": "This already exists",
+    "UNAUTHORIZED": "Please sign in",
+    "FORBIDDEN": "You do not have permission"
+  }
 }

@@ -17,59 +17,56 @@ import type { AppEnv } from "../types/http"
 const IMAGE_FANTA_FOLDER = "fanta"
 
 export const fantaRoutes = new Hono<AppEnv>()
+  .get("/", optionalAuth, async ({ var: { send, user } }) =>
+    send(await listFanta(user?.id)),
+  )
+  .get(
+    "/:id",
+    optionalAuth,
+    zValidator("param", idParamSchema),
+    async ({ req, var: { send, fail, user } }) => {
+      const { id } = req.valid("param")
 
-fantaRoutes.get("/", optionalAuth, async ({ var: { send, user } }) =>
-  send(await listFanta(user?.id)),
-)
+      const result = await getFanta(id, user?.id)
 
-fantaRoutes.get(
-  "/:id",
-  optionalAuth,
-  zValidator("param", idParamSchema),
-  async ({ req, var: { send, fail, user } }) => {
-    const { id } = req.valid("param")
+      if (!result) {
+        return fail("notFound", "Fanta not found")
+      }
 
-    const result = await getFanta(id, user?.id)
+      return send(result)
+    },
+  )
+  .post(
+    "/",
+    ...isAuthorized({ fanta: ["create"] }),
+    zValidator("form", createFantaSchema),
+    async ({ req, var: { send, fail } }) => {
+      const { flavour, countryCodes, image } = req.valid("form")
 
-    if (!result) {
-      return fail("notFound", "Fanta not found")
-    }
+      if (await isFlavourExisting(flavour)) {
+        return fail("conflict", "Flavour already exists")
+      }
 
-    return send(result)
-  },
-)
+      const existingCountriesIds = await filterCountriesByIds(countryCodes)
 
-fantaRoutes.post(
-  "/",
-  ...isAuthorized({ fanta: ["create"] }),
-  zValidator("form", createFantaSchema),
-  async ({ req, var: { send, fail } }) => {
-    const { flavour, countryCodes, image } = req.valid("form")
+      if (existingCountriesIds.length === 0) {
+        return fail("badRequest", "No valid country IDs provided")
+      }
 
-    if (await isFlavourExisting(flavour)) {
-      return fail("conflict", "Flavour already exists")
-    }
+      const imageKey = await uploadImage({
+        image,
+        folder: IMAGE_FANTA_FOLDER,
+        name: slugify(flavour),
+      })
 
-    const existingCountriesIds = await filterCountriesByIds(countryCodes)
+      const { id } = await createFanta({
+        flavour,
+        imageKey,
+        countryIds: existingCountriesIds.map((c) => c.id),
+      })
 
-    if (existingCountriesIds.length === 0) {
-      return fail("badRequest", "No valid country IDs provided")
-    }
+      const created = await getFanta(id)
 
-    const imageKey = await uploadImage({
-      image,
-      folder: IMAGE_FANTA_FOLDER,
-      name: slugify(flavour),
-    })
-
-    const { id } = await createFanta({
-      flavour,
-      imageKey,
-      countryIds: existingCountriesIds.map((c) => c.id),
-    })
-
-    const created = await getFanta(id)
-
-    return send(created, {}, HTTP_CREATED_STATUS)
-  },
-)
+      return send(created, {}, HTTP_CREATED_STATUS)
+    },
+  )

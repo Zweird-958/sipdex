@@ -4,7 +4,7 @@ import reactConfig from "@fantadex/eslint/react"
 /** @type {import('@fantadex/eslint').Config} */
 export default [
   {
-    ignores: [".expo", "expo-env.d.ts", "nativewind-env.d.ts"],
+    ignores: ["dist", ".expo", "expo-env.d.ts", "nativewind-env.d.ts"],
   },
   ...baseConfig,
   ...reactConfig,
