@@ -5,6 +5,10 @@
   "scripts": {
     "dev": "turbo dev",
     "start": "pnpm --filter @fantadex/backend start",
+    "mobile": "pnpm --filter @fantadex/mobile start",
+    "mobile:ios": "pnpm --filter @fantadex/mobile ios",
+    "mobile:android": "pnpm --filter @fantadex/mobile android",
+    "mobile:web": "pnpm --filter @fantadex/mobile web",
     "typecheck": "turbo typecheck",
     "lint": "turbo lint",
     "lint:fix": "turbo lint -- --fix",

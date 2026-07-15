@@ -1,0 +1,52 @@
+{
+  "name": "@fantadex/mobile",
+  "main": "expo-router/entry",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@fantadex/api": "workspace:*",
+    "@rn-primitives/portal": "^1.5.2",
+    "@rn-primitives/slot": "^1.5.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "expo": "~57.0.6",
+    "expo-constants": "~57.0.5",
+    "expo-linking": "~57.0.3",
+    "expo-localization": "~57.0.1",
+    "expo-router": "~57.0.6",
+    "expo-splash-screen": "~57.0.4",
+    "expo-system-ui": "~57.0.1",
+    "hono": "^4.12.30",
+    "i18next": "^26.3.6",
+    "nativewind": "^4.2.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-i18next": "^17.0.9",
+    "react-native": "0.86.0",
+    "react-native-css-interop": "^0.2.6",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-reanimated": "4.5.0",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "4.25.2",
+    "react-native-web": "~0.21.0",
+    "react-native-worklets": "0.10.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@fantadex/eslint": "workspace:*",
+    "@fantadex/typescript": "workspace:*",
+    "@types/react": "~19.2.2",
+    "eslint": "catalog:",
+    "tailwindcss": "^3.4.19",
+    "typescript": "~6.0.3"
+  }
+}
