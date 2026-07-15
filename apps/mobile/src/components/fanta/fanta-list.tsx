@@ -1,0 +1,64 @@
+import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import { FlatList, RefreshControl, View } from "react-native"
+import { FantaCard } from "@/components/fanta/fanta-card"
+import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
+import { Text } from "@/components/ui/text"
+import { useError } from "@/hooks/use-error"
+import { useForegroundColor } from "@/hooks/use-foreground-color"
+import { useQuery } from "@/hooks/use-query"
+import { client } from "@/lib/api"
+
+export const FantaList = () => {
+  const { t } = useTranslation()
+  const { onError } = useError("fanta")
+  const foreground = useForegroundColor()
+  const { data, isPending, isError, error, refetch, isRefetching } = useQuery(
+    client.api.fanta.$get,
+    { queryKey: ["fanta"] },
+  )
+
+  useEffect(() => {
+    if (error) {
+      onError(error)
+    }
+  }, [error, onError])
+
+  if (isPending) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Spinner />
+      </View>
+    )
+  }
+
+  if (isError) {
+    return (
+      <View className="flex-1 items-center justify-center gap-4 p-4">
+        <Text variant="muted">{t("errors.default")}</Text>
+        <Button variant="outline" onPress={() => refetch()}>
+          <Text>{t("retry")}</Text>
+        </Button>
+      </View>
+    )
+  }
+
+  return (
+    <FlatList
+      className="flex-1"
+      data={data.result}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => <FantaCard {...item} />}
+      contentContainerClassName="gap-3 p-4"
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefetching}
+          onRefresh={() => refetch()}
+          tintColor={foreground}
+          colors={[foreground]}
+        />
+      }
+    />
+  )
+}
