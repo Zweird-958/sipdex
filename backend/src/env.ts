@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
 import "dotenv/config"
 import { z } from "zod"
+import { logger } from "./lib/logger/logger"
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
@@ -35,8 +35,10 @@ const parsed = envSchema.safeParse({
 })
 
 if (!parsed.success) {
-  console.error("❌ Invalid environment configuration:")
-  console.error(z.treeifyError(parsed.error))
+  logger.fatal(
+    { error: z.treeifyError(parsed.error) },
+    "❌ Invalid environment configuration",
+  )
   process.exit(1)
 }
 

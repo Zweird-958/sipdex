@@ -1,9 +1,10 @@
+import { pinoLogger } from "hono-pino"
 import { cors } from "hono/cors"
-import { logger } from "hono/logger"
 import { auth } from "./auth"
 import { env } from "./env"
 import { contextVariables, fail, send } from "./lib/http/context"
 import { factory } from "./lib/http/factory"
+import { logger } from "./lib/logger/logger"
 import { countriesRoutes } from "./routes/countries"
 import { fantaRoutes } from "./routes/fanta"
 import { tastingsRoutes } from "./routes/tastings"
@@ -13,7 +14,7 @@ export const createApp = () => {
 
   app.use(
     "*",
-    logger(),
+    pinoLogger({ pino: logger }),
     cors({
       origin: env.TRUSTED_ORIGINS,
       credentials: true,
@@ -37,7 +38,11 @@ export const createApp = () => {
   app.route("/countries", countriesRoutes)
   app.route("/", tastingsRoutes)
 
-  app.onError((_, { var: { fail: cFail } }) => cFail("internalError"))
+  app.onError((err, { var: { fail: cFail, logger: cLogger } }) => {
+    cLogger.error({ err }, "Unhandled error")
+
+    return cFail("internalError")
+  })
 
   app.notFound(({ var: { fail: cFail } }) => cFail("notFound"))
 
