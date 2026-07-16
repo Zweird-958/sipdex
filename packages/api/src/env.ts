@@ -21,6 +21,7 @@ const envSchema = z.object({
         .map((s) => s.trim())
         .filter(Boolean),
     ),
+  MOBILE_ORIGIN: z.string(),
 
   S3_URL: z.url(),
   S3_BUCKET_NAME: z.string(),

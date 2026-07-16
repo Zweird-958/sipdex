@@ -1,3 +1,4 @@
+import { expo } from "@better-auth/expo"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { createAuthMiddleware } from "better-auth/api"
@@ -11,10 +12,17 @@ const ADMIN_ROLES = ["admin"] as const
 const ROLES = ["user", "admin"] as const
 const DEFAULT_ROLE = "user" as const
 
+// The mobile app scheme comes from env (MOBILE_ORIGIN). The `exp://` origins
+// cover the Expo dev client / Expo Go during development.
+const MOBILE_ORIGINS = [
+  env.MOBILE_ORIGIN,
+  ...(process.env.NODE_ENV === "production" ? [] : ["exp://", "exp://**"]),
+]
+
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: env.TRUSTED_ORIGINS,
+  trustedOrigins: [...env.TRUSTED_ORIGINS, ...MOBILE_ORIGINS],
 
   hooks: {
     // eslint-disable-next-line require-await, consistent-return
@@ -44,6 +52,7 @@ export const auth = betterAuth({
   },
 
   plugins: [
+    expo(),
     adminPlugin({
       defaultRole: DEFAULT_ROLE,
       adminRoles: [...ADMIN_ROLES],

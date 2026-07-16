@@ -103,6 +103,7 @@ jobs:
       S3_ACCESS_KEY_ID: test-access-key
       S3_SECRET_ACCESS_KEY: test-secret-key
       S3_PUBLIC_URL: http://localhost:9000/test-bucket/
+      MOBILE_ORIGIN: "mobile://"
 
     steps:
       - uses: actions/checkout@v4
