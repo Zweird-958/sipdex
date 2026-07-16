@@ -1,14 +1,8 @@
-import { useTranslation } from "react-i18next"
-import { Image, View } from "react-native"
+import { useRouter } from "expo-router"
+import { Image, Pressable, View } from "react-native"
+import { CountryFlag } from "@/components/fanta/country-flag"
 import { Card } from "@/components/ui/card"
 import { Text } from "@/components/ui/text"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { countryCodeToFlag } from "@/lib/country-flag"
-import { getCountryName } from "@/lib/country-name"
 
 type Country = {
   name: string
@@ -16,6 +10,7 @@ type Country = {
 }
 
 type FantaCardProps = {
+  id: string
   flavour: string
   imageUrl: string
   countries: Country[]
@@ -23,36 +18,38 @@ type FantaCardProps = {
 
 const MAX_COUNTRIES_DISPLAYED = 2
 
-export const FantaCard = ({ flavour, imageUrl, countries }: FantaCardProps) => {
-  const { i18n } = useTranslation()
+export const FantaCard = ({
+  id,
+  flavour,
+  imageUrl,
+  countries,
+}: FantaCardProps) => {
+  const router = useRouter()
   const firstCountries = countries.slice(0, MAX_COUNTRIES_DISPLAYED)
 
   return (
-    <Card className="flex-row items-center gap-4 p-3">
-      <Image
-        source={{ uri: imageUrl }}
-        resizeMode="contain"
-        className="h-16 w-16 rounded-md"
-      />
-      <View className="flex-1 gap-1">
-        <Text variant="large">{flavour}</Text>
-        {firstCountries.length > 0 && (
-          <View className="flex-row gap-2">
-            {firstCountries.map((country) => (
-              <Tooltip key={country.code}>
-                <TooltipTrigger>
-                  <Text className="text-lg">
-                    {countryCodeToFlag(country.code)}
-                  </Text>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <Text>{getCountryName(country.code, i18n.language)}</Text>
-                </TooltipContent>
-              </Tooltip>
-            ))}
-          </View>
-        )}
-      </View>
-    </Card>
+    <Pressable
+      onPress={() =>
+        router.push({ pathname: "/fanta/[id]", params: { id, flavour } })
+      }
+    >
+      <Card className="flex-row items-center gap-4 p-3">
+        <Image
+          source={{ uri: imageUrl }}
+          resizeMode="contain"
+          className="h-16 w-16 rounded-md"
+        />
+        <View className="flex-1 gap-1">
+          <Text variant="large">{flavour}</Text>
+          {firstCountries.length > 0 && (
+            <View className="flex-row gap-2">
+              {firstCountries.map((country) => (
+                <CountryFlag key={country.code} country={country} />
+              ))}
+            </View>
+          )}
+        </View>
+      </Card>
+    </Pressable>
   )
 }
