@@ -7,31 +7,22 @@ import { FormField } from "@/components/form-field"
 import { Button } from "@/components/ui/button"
 import { Text } from "@/components/ui/text"
 import { authClient } from "@/lib/auth-client"
-import { signUpSchema } from "@/schemas/auth"
-import type { SignUpValues } from "@/types/auth"
+import { signInSchema } from "@/schemas/auth"
+import type { SignInValues } from "@/types/auth"
 
-type SignUpFormProps = {
-  onSuccess: () => void
-}
-
-export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
+export const SignInForm = () => {
   const { t } = useTranslation()
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
-    reset,
-  } = useForm<SignUpValues>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: { email: "", password: "", confirmPassword: "" },
+  } = useForm<SignInValues>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: { email: "", password: "" },
   })
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
-    const { error } = await authClient.signUp.email({
-      name: "",
-      email,
-      password,
-    })
+    const { error } = await authClient.signIn.email({ email, password })
 
     if (error) {
       toast.error(error.message ?? t("errors.default"))
@@ -39,9 +30,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       return
     }
 
-    reset()
-    toast.success(t("auth.signUp.success"))
-    onSuccess()
+    toast.success(t("auth.signIn.success"))
   })
 
   return (
@@ -60,14 +49,8 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
         label={t("auth.password")}
         secureTextEntry
       />
-      <FormField
-        control={control}
-        name="confirmPassword"
-        label={t("auth.confirmPassword")}
-        secureTextEntry
-      />
       <Button onPress={onSubmit} isLoading={isSubmitting}>
-        <Text>{t("auth.signUp.submit")}</Text>
+        <Text>{t("auth.signIn.submit")}</Text>
       </Button>
     </View>
   )

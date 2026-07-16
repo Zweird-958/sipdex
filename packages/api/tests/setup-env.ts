@@ -18,6 +18,7 @@ const defaults: Record<string, string> = {
   DATABASE_URL_TEST:
     "postgresql://fantadex:fantadex@localhost:5440/fantadex_test",
   BETTER_AUTH_SECRET: "test-secret",
+  MOBILE_ORIGIN: "mobile://",
   S3_URL: "http://localhost:9000",
   S3_BUCKET_NAME: "test-bucket",
   S3_ACCESS_KEY_ID: "test-access-key",
