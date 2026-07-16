@@ -8,7 +8,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated"
-import { useThemeColors } from "@/hooks/use-theme-colors"
+import { Icon } from "@/components/ui/icon"
 
 type SpinnerProps = {
   size?: number
@@ -20,7 +20,6 @@ const FULL_TURN = 360
 
 export const Spinner = ({ size = 24, className }: SpinnerProps) => {
   const rotation = useSharedValue(0)
-  const { foreground } = useThemeColors()
 
   useEffect(() => {
     rotation.value = withRepeat(
@@ -38,8 +37,8 @@ export const Spinner = ({ size = 24, className }: SpinnerProps) => {
   }))
 
   return (
-    <Animated.View style={animatedStyle} className={className}>
-      <LoaderCircle size={size} color={foreground} />
+    <Animated.View style={animatedStyle}>
+      <Icon as={LoaderCircle} size={size} className={className} />
     </Animated.View>
   )
 }

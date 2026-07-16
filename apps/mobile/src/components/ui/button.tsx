@@ -1,7 +1,10 @@
 import { type VariantProps, cva } from "class-variance-authority"
 import { Platform, Pressable } from "react-native"
+import { Spinner } from "@/components/ui/spinner"
 import { TextClassContext } from "@/components/ui/text"
 import { cn } from "@/lib/utils"
+
+const SPINNER_SIZE = 16
 
 const buttonVariants = cva(
   cn(
@@ -99,22 +102,39 @@ const buttonTextVariants = cva(
   },
 )
 
-type ButtonProps = React.ComponentProps<typeof Pressable> &
+type ButtonProps = Omit<React.ComponentProps<typeof Pressable>, "children"> &
   React.RefAttributes<typeof Pressable> &
-  VariantProps<typeof buttonVariants>
+  VariantProps<typeof buttonVariants> & {
+    isLoading?: boolean
+    children?: React.ReactNode
+  }
 
-function Button({ className, variant, size, ...props }: ButtonProps) {
+function Button({
+  className,
+  variant,
+  size,
+  isLoading = false,
+  disabled,
+  children,
+  ...props
+}: ButtonProps) {
+  const isDisabled = disabled === true || isLoading
+
   return (
     <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
       <Pressable
         className={cn(
-          props.disabled && "opacity-50",
+          isDisabled && "opacity-50",
           buttonVariants({ variant, size }),
           className,
         )}
         role="button"
+        disabled={isDisabled}
         {...props}
-      />
+      >
+        {isLoading && <Spinner size={SPINNER_SIZE} />}
+        {children}
+      </Pressable>
     </TextClassContext.Provider>
   )
 }

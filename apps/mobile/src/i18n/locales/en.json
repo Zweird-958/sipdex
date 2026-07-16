@@ -1,6 +1,28 @@
 {
   "welcome": "Welcome to Fantadex",
   "retry": "Retry",
+  "tabs": {
+    "home": "Home",
+    "profile": "Profile"
+  },
+  "auth": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "signUp": {
+      "title": "Sign up",
+      "submit": "Create account",
+      "success": "Account created"
+    },
+    "errors": {
+      "nameRequired": "Please enter your name",
+      "emailInvalid": "Enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordWeak": "Password must include a lowercase, uppercase, number and special character",
+      "passwordMismatch": "Passwords do not match"
+    }
+  },
   "settings": {
     "title": "Settings",
     "theme": {
