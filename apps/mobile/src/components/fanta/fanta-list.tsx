@@ -6,14 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { Text } from "@/components/ui/text"
 import { useError } from "@/hooks/use-error"
-import { useForegroundColor } from "@/hooks/use-foreground-color"
 import { useQuery } from "@/hooks/use-query"
+import { useThemeColors } from "@/hooks/use-theme-colors"
 import { client } from "@/lib/api"
 
 export const FantaList = () => {
   const { t } = useTranslation()
   const { onError } = useError("fanta")
-  const foreground = useForegroundColor()
+  const { foreground } = useThemeColors()
   const { data, isPending, isError, error, refetch, isRefetching } = useQuery(
     client.api.fanta.$get,
     { queryKey: ["fanta"] },
