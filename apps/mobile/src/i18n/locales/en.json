@@ -1,6 +1,20 @@
 {
   "welcome": "Welcome to Fantadex",
   "retry": "Retry",
+  "settings": {
+    "title": "Settings",
+    "theme": {
+      "label": "Theme",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "language": {
+      "label": "Language",
+      "en": "English",
+      "fr": "Français"
+    }
+  },
   "errors": {
     "default": "Something went wrong",
     "INTERNAL_ERROR": "A server error occurred",

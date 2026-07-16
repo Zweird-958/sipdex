@@ -1,6 +1,20 @@
 {
   "welcome": "Bienvenue sur Fantadex",
   "retry": "Réessayer",
+  "settings": {
+    "title": "Paramètres",
+    "theme": {
+      "label": "Thème",
+      "system": "Système",
+      "light": "Clair",
+      "dark": "Sombre"
+    },
+    "language": {
+      "label": "Langue",
+      "en": "English",
+      "fr": "Français"
+    }
+  },
   "errors": {
     "default": "Une erreur est survenue",
     "INTERNAL_ERROR": "Une erreur serveur est survenue",
