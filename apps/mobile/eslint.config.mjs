@@ -19,6 +19,8 @@ export default [
     files: ["src/components/ui/**"],
     rules: {
       "no-undefined": "off",
+      "max-lines": "off",
+      complexity: "off",
     },
   },
 ]

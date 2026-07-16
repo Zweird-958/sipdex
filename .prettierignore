@@ -7,3 +7,4 @@ data
 packages/api/drizzle
 pnpm-lock.yaml
 .husky/_
+expo-env.d.ts
