@@ -12,6 +12,7 @@ import {
 } from "../src/db/schema"
 import { resolveCountry } from "../src/lib/countries/resolve-country"
 import { logger } from "../src/lib/logger/logger"
+import { slugify } from "../src/lib/slugify/slugify"
 import { uploadImage } from "../src/storage"
 
 const COUNTRY_INPUTS = [
@@ -25,11 +26,11 @@ const COUNTRY_INPUTS = [
 ]
 
 const FANTA_SEED = [
-  { flavour: "Orange", countryCodes: ["FR", "DE"] },
-  { flavour: "Lemon", countryCodes: ["IT"] },
-  { flavour: "Grape", countryCodes: ["ES", "US"] },
-  { flavour: "Strawberry", countryCodes: ["JP"] },
-  { flavour: "Exotic", countryCodes: ["BR", "FR"] },
+  { flavour: "Orange", countryCodes: ["FR", "DE"], image: "orange.png" },
+  { flavour: "Lemon", countryCodes: ["IT"], image: "lemon.png" },
+  { flavour: "Grape", countryCodes: ["ES", "US"], image: "grape.png" },
+  { flavour: "Strawberry", countryCodes: ["JP"], image: "strawberry.png" },
+  { flavour: "Exotic", countryCodes: ["BR", "FR"], image: "exotic.png" },
 ]
 
 const USER_SEED = [
@@ -74,23 +75,26 @@ const seedCountries = async () => {
   return new Map(rows.map((row) => [row.code, row.id]))
 }
 
-const uploadSeedImage = async () => {
-  const buffer = await readFile(new URL("../bruno/sample.png", import.meta.url))
-  const image = new File([buffer], "sample.png", { type: "image/png" })
+const uploadFantaImage = async (flavour: string, fileName: string) => {
+  const buffer = await readFile(
+    new URL(`./fanta-images/${fileName}`, import.meta.url),
+  )
+  const image = new File([buffer], fileName, { type: "image/png" })
 
-  return uploadImage({ image, folder: "fanta", name: "seed.png" })
+  return uploadImage({ image, folder: "fanta", name: slugify(flavour) })
 }
 
-const seedFanta = async (
-  countryIdByCode: Map<string, string>,
-  imageKey: string,
-) => {
+const seedFanta = async (countryIdByCode: Map<string, string>) => {
+  const imageKeys = await Promise.all(
+    FANTA_SEED.map(({ flavour, image }) => uploadFantaImage(flavour, image)),
+  )
+
   const createdFanta = await db
     .insert(fantaTable)
     .values(
-      FANTA_SEED.map(({ flavour }) => ({
+      FANTA_SEED.map(({ flavour }, index) => ({
         flavour,
-        imageKey,
+        imageKey: imageKeys[index],
       })),
     )
     .returning({ id: fantaTable.id })
@@ -151,17 +155,14 @@ const main = async () => {
   logger.info("🧹 Clearing existing data...")
   await clearData()
 
-  logger.info("🪣 Ensuring bucket + uploading shared Fanta image...")
-  const imageKey = await uploadSeedImage()
-
   logger.info("🌍 Seeding 7 countries...")
   const countryIdByCode = await seedCountries()
 
   logger.info("👤 Seeding 2 users (1 admin, 1 default)...")
   const userIds = await seedUsers()
 
-  logger.info("🥤 Seeding 5 Fanta...")
-  const fantaIds = await seedFanta(countryIdByCode, imageKey)
+  logger.info("🥤 Seeding 5 Fanta (uploading real images)...")
+  const fantaIds = await seedFanta(countryIdByCode)
 
   logger.info("😋 Seeding 3 tastings per user...")
   await seedTastings(userIds, fantaIds)
