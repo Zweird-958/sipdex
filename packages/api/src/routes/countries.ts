@@ -11,39 +11,37 @@ import { createCountrySchema } from "../schemas/countries"
 import type { AppEnv } from "../types/http"
 
 export const countriesRoutes = new Hono<AppEnv>()
+  .get("/", async ({ var: { send } }) => {
+    const countries = await getCountries()
 
-countriesRoutes.get("/", async ({ var: { send } }) => {
-  const countries = await getCountries()
+    return send(countries)
+  })
+  .post(
+    "/",
+    ...isAuthorized({ countries: ["create"] }),
+    zValidator("json", createCountrySchema),
+    async ({ req, var: { send, fail } }) => {
+      const { name } = req.valid("json")
 
-  return send(countries)
-})
+      const resolved = resolveCountry(name)
 
-countriesRoutes.post(
-  "/",
-  ...isAuthorized({ countries: ["create"] }),
-  zValidator("json", createCountrySchema),
-  async ({ req, var: { send, fail } }) => {
-    const { name } = req.valid("json")
-
-    const resolved = resolveCountry(name)
-
-    if (!resolved) {
-      return fail("badRequest", `"${name}" is not a recognised country`)
-    }
-
-    try {
-      const created = await createCountry({
-        name: resolved.name,
-        code: resolved.code,
-      })
-
-      return send(created, {}, HTTP_CREATED_STATUS)
-    } catch (err) {
-      if (getSqlErrorCode(err) === SQL_ERROR_CODES.UNIQUE_VIOLATION) {
-        return fail("conflict", `Country "${resolved.name}" already exists`)
+      if (!resolved) {
+        return fail("badRequest", `"${name}" is not a recognised country`)
       }
 
-      throw err
-    }
-  },
-)
+      try {
+        const created = await createCountry({
+          name: resolved.name,
+          code: resolved.code,
+        })
+
+        return send(created, {}, HTTP_CREATED_STATUS)
+      } catch (err) {
+        if (getSqlErrorCode(err) === SQL_ERROR_CODES.UNIQUE_VIOLATION) {
+          return fail("conflict", `Country "${resolved.name}" already exists`)
+        }
+
+        throw err
+      }
+    },
+  )
