@@ -7,7 +7,20 @@
   },
   "tabs": {
     "home": "Home",
-    "profile": "Profile"
+    "profile": "Profile",
+    "admin": "Admin"
+  },
+  "admin": {
+    "countries": {
+      "title": "Add a country",
+      "label": "Country",
+      "placeholder": "e.g. FR or France",
+      "submit": "Add country",
+      "success": "{{name}} added",
+      "errors": {
+        "nameRequired": "Please enter a country"
+      }
+    }
   },
   "auth": {
     "name": "Name",
@@ -59,6 +72,10 @@
     "BAD_REQUEST": "Invalid request",
     "CONFLICT": "This already exists",
     "UNAUTHORIZED": "Please sign in",
-    "FORBIDDEN": "You do not have permission"
+    "FORBIDDEN": "You do not have permission",
+    "countries": {
+      "BAD_REQUEST": "Unknown country — use a code like FR or a name like France",
+      "CONFLICT": "This country already exists"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { expoClient } from "@better-auth/expo/client"
+import { adminClient } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 import * as SecureStore from "expo-secure-store"
 import { config } from "@/lib/config"
@@ -12,5 +13,6 @@ export const authClient = createAuthClient({
       storagePrefix: config.storagePrefix,
       storage: SecureStore,
     }),
+    adminClient(),
   ],
 })
