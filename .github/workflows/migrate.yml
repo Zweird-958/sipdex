@@ -1,0 +1,29 @@
+name: Migrate
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "packages/api/drizzle/**"
+
+# Never run two migrations against the same environment at once.
+concurrency:
+  group: migrate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    # main -> "production" environment, develop -> "dev" environment.
+    # The environment scopes which DATABASE_URL secret is used.
+    environment: ${{ github.ref_name == 'main' && 'production' || 'dev' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/setup
+
+      - name: Apply pending migrations
+        run: pnpm db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
