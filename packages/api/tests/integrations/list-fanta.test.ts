@@ -19,7 +19,7 @@ describe("listFanta", () => {
 
     const expectedIds = [a.id, b.id, c.id].sort()
     expect(result.map((f) => f.id)).toEqual(expectedIds)
-    expect(result.every((f) => f.tasted === false)).toBe(true)
+    expect(result.every((f) => f.tasted === null)).toBe(true)
   })
 
   it("flags only the fanta the given user has tasted", async () => {

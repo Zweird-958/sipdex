@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { Image, ScrollView, View } from "react-native"
 import { CountryFlag } from "@/components/fanta/country-flag"
+import { TasteButton } from "@/components/fanta/taste-button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Text } from "@/components/ui/text"
 import { useError } from "@/hooks/use-error"
@@ -43,7 +44,7 @@ export const FantaDetail = ({ id }: FantaDetailProps) => {
     )
   }
 
-  const { imageUrl, countries } = data.result
+  const { imageUrl, countries, tasted } = data.result
 
   return (
     <ScrollView
@@ -55,6 +56,7 @@ export const FantaDetail = ({ id }: FantaDetailProps) => {
         resizeMode="contain"
         className="h-56 w-56 rounded-xl"
       />
+      <TasteButton id={id} tasted={tasted} />
       <View className="flex-row flex-wrap justify-center gap-3">
         {countries.map((country) => (
           <CountryFlag

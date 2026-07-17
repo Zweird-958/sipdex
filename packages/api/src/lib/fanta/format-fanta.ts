@@ -1,7 +1,10 @@
 import { getImageUrl } from "../../storage"
 import type { FantaWithCountries } from "../../types/fanta"
 
-export const formatFanta = (fanta: FantaWithCountries, tasted: boolean) => ({
+export const formatFanta = (
+  fanta: FantaWithCountries,
+  tasted: boolean | null,
+) => ({
   id: fanta.id,
   flavour: fanta.flavour,
   imageUrl: getImageUrl(fanta.imageKey),

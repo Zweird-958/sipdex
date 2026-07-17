@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router"
 import { Image, Pressable, View } from "react-native"
 import { CountryFlag } from "@/components/fanta/country-flag"
+import { TasteButton } from "@/components/fanta/taste-button"
 import { Card } from "@/components/ui/card"
 import { Text } from "@/components/ui/text"
 
@@ -14,6 +15,7 @@ type FantaCardProps = {
   flavour: string
   imageUrl: string
   countries: Country[]
+  tasted: boolean | null
 }
 
 const MAX_COUNTRIES_DISPLAYED = 2
@@ -23,6 +25,7 @@ export const FantaCard = ({
   flavour,
   imageUrl,
   countries,
+  tasted,
 }: FantaCardProps) => {
   const router = useRouter()
   const firstCountries = countries.slice(0, MAX_COUNTRIES_DISPLAYED)
@@ -49,6 +52,7 @@ export const FantaCard = ({
             </View>
           )}
         </View>
+        <TasteButton id={id} tasted={tasted} />
       </Card>
     </Pressable>
   )

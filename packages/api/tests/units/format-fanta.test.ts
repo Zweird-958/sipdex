@@ -63,5 +63,6 @@ describe("formatFanta", () => {
 
     expect(formatFanta(fanta, true).tasted).toBe(true)
     expect(formatFanta(fanta, false).tasted).toBe(false)
+    expect(formatFanta(fanta, null).tasted).toBe(null)
   })
 })
