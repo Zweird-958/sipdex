@@ -11,6 +11,10 @@
     "admin": "Admin"
   },
   "admin": {
+    "tabs": {
+      "country": "Pays",
+      "fanta": "Fanta"
+    },
     "countries": {
       "title": "Ajouter un pays",
       "label": "Pays",
@@ -19,6 +23,24 @@
       "success": "{{name}} ajouté",
       "errors": {
         "nameRequired": "Veuillez saisir un pays"
+      }
+    },
+    "fanta": {
+      "title": "Ajouter un fanta",
+      "flavour": "Parfum",
+      "countries": "Pays",
+      "image": "Image",
+      "pickImage": "Galerie",
+      "takePhoto": "Caméra",
+      "submit": "Ajouter le fanta",
+      "success": "{{flavour}} ajouté",
+      "searchPlaceholder": "Rechercher des pays",
+      "empty": "Aucun pays trouvé",
+      "errors": {
+        "flavourRequired": "Veuillez saisir un parfum",
+        "countriesRequired": "Veuillez sélectionner au moins un pays",
+        "imageRequired": "Veuillez ajouter une image",
+        "cameraDenied": "L'autorisation de la caméra est requise"
       }
     }
   },
@@ -76,6 +98,10 @@
     "countries": {
       "BAD_REQUEST": "Pays inconnu — utilisez un code comme FR ou un nom comme France",
       "CONFLICT": "Ce pays existe déjà"
+    },
+    "fanta": {
+      "BAD_REQUEST": "Veuillez sélectionner au moins un pays valide",
+      "CONFLICT": "Ce parfum existe déjà"
     }
   }
 }

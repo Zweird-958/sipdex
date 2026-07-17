@@ -11,6 +11,10 @@
     "admin": "Admin"
   },
   "admin": {
+    "tabs": {
+      "country": "Country",
+      "fanta": "Fanta"
+    },
     "countries": {
       "title": "Add a country",
       "label": "Country",
@@ -19,6 +23,24 @@
       "success": "{{name}} added",
       "errors": {
         "nameRequired": "Please enter a country"
+      }
+    },
+    "fanta": {
+      "title": "Add a fanta",
+      "flavour": "Flavour",
+      "countries": "Countries",
+      "image": "Image",
+      "pickImage": "Library",
+      "takePhoto": "Camera",
+      "submit": "Add fanta",
+      "success": "{{flavour}} added",
+      "searchPlaceholder": "Search countries",
+      "empty": "No country found",
+      "errors": {
+        "flavourRequired": "Please enter a flavour",
+        "countriesRequired": "Please select at least one country",
+        "imageRequired": "Please add an image",
+        "cameraDenied": "Camera permission is required"
       }
     }
   },
@@ -76,6 +98,10 @@
     "countries": {
       "BAD_REQUEST": "Unknown country — use a code like FR or a name like France",
       "CONFLICT": "This country already exists"
+    },
+    "fanta": {
+      "BAD_REQUEST": "Please select at least one valid country",
+      "CONFLICT": "This flavour already exists"
     }
   }
 }
