@@ -10,39 +10,36 @@ import { idParamSchema } from "../schemas/common"
 import type { AppEnv } from "../types/http"
 
 export const tastingsRoutes = new Hono<AppEnv>()
+  .get(
+    "/tastings",
+    ...isAuthorized({ tastings: ["list"] }),
+    async ({ var: { send, user } }) => send(await listTastedFanta(user.id)),
+  )
+  .post(
+    "/fanta/:id/taste",
+    ...isAuthorized({ tastings: ["create"] }),
+    zValidator("param", idParamSchema),
+    async ({ req, var: { send, fail, user } }) => {
+      const { id: fantaId } = req.valid("param")
 
-tastingsRoutes.get(
-  "/tastings",
-  ...isAuthorized({ tastings: ["list"] }),
-  async ({ var: { send, user } }) => send(await listTastedFanta(user.id)),
-)
+      if (!(await fantaExists(fantaId))) {
+        return fail("notFound", "Fanta not found")
+      }
 
-tastingsRoutes.post(
-  "/fanta/:id/taste",
-  ...isAuthorized({ tastings: ["create"] }),
-  zValidator("param", idParamSchema),
-  async ({ req, var: { send, fail, user } }) => {
-    const { id: fantaId } = req.valid("param")
+      await addTasting(user.id, fantaId)
 
-    if (!(await fantaExists(fantaId))) {
-      return fail("notFound", "Fanta not found")
-    }
+      return send({ fantaId, tasted: true }, {}, HTTP_CREATED_STATUS)
+    },
+  )
+  .delete(
+    "/fanta/:id/taste",
+    ...isAuthorized({ tastings: ["delete"] }),
+    zValidator("param", idParamSchema),
+    async ({ req, var: { send, user } }) => {
+      const { id: fantaId } = req.valid("param")
 
-    await addTasting(user.id, fantaId)
+      await removeTasting(user.id, fantaId)
 
-    return send({ fantaId, tasted: true }, {}, HTTP_CREATED_STATUS)
-  },
-)
-
-tastingsRoutes.delete(
-  "/fanta/:id/taste",
-  ...isAuthorized({ tastings: ["delete"] }),
-  zValidator("param", idParamSchema),
-  async ({ req, var: { send, user } }) => {
-    const { id: fantaId } = req.valid("param")
-
-    await removeTasting(user.id, fantaId)
-
-    return send({ fantaId, tasted: false })
-  },
-)
+      return send({ fantaId, tasted: false })
+    },
+  )

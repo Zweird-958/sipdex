@@ -18,5 +18,8 @@ export const getFanta = async (id: string, userId?: string) => {
 
   const tastedIds = await tastedIdsForUser(userId, [fantaResult.id])
 
-  return formatFanta(fantaResult, tastedIds.includes(fantaResult.id))
+  return formatFanta(
+    fantaResult,
+    userId ? tastedIds.includes(fantaResult.id) : null,
+  )
 }

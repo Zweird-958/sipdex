@@ -28,7 +28,7 @@ describe("getFanta", () => {
         { name: "Albania", code: "AL" },
         { name: "Zimbabwe", code: "ZW" },
       ],
-      tasted: false,
+      tasted: null,
       createdAt: fanta.createdAt,
     })
   })

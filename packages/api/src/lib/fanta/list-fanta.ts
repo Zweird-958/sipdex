@@ -18,5 +18,7 @@ export const listFanta = async (userId?: string) => {
     result.map((r) => r.id),
   )
 
-  return result.map((r) => formatFanta(r, tastedIds.includes(r.id)))
+  return result.map((r) =>
+    formatFanta(r, userId ? tastedIds.includes(r.id) : null),
+  )
 }

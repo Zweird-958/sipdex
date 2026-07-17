@@ -9,14 +9,16 @@ import { useError } from "@/hooks/use-error"
 import { useQuery } from "@/hooks/use-query"
 import { useThemeColors } from "@/hooks/use-theme-colors"
 import { client } from "@/lib/api"
+import { authClient } from "@/lib/auth-client"
 
 export const FantaList = () => {
   const { t } = useTranslation()
   const { onError } = useError("fanta")
   const { foreground } = useThemeColors()
+  const { data: session } = authClient.useSession()
   const { data, isPending, isError, error, refetch, isRefetching } = useQuery(
     client.api.fanta.$get,
-    { queryKey: ["fanta"] },
+    { queryKey: ["fanta", session?.user.id] },
   )
 
   useEffect(() => {
