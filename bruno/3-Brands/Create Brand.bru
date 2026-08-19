@@ -1,0 +1,39 @@
+meta {
+  name: Create Brand
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/brands
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+body:multipart-form {
+  name: {{brandName}}
+  image: @file(sample.png)
+}
+
+script:post-response {
+  // Remember the created brand's id so Create Drink can reference {{brandId}}.
+  const brand = res.getBody()?.result;
+  if (brand?.id) {
+    bru.setEnvVar("brandId", brand.id);
+  }
+}
+
+docs {
+  Requires the `brands:create` permission (admin). multipart/form-data:
+    - name    (string, required, unique)
+    - image   (file, required — png or jpeg, max 5 MB)
+
+  `name` defaults to `{{brandName}}` from the Local environment (`Fanta`). The
+  sample image lives at the collection root (sample.png). Returns 409 if the
+  brand already exists, 403 for non-admins. Saves the created brand's id (from
+  `result.id`) to `brandId`, used by `4-Drinks > Create Drink`.
+}

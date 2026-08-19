@@ -1,9 +1,9 @@
 import { View } from "react-native"
-import { FantaList } from "@/components/fanta/fanta-list"
+import { DrinkList } from "@/components/drinks/drink-list"
 
 const HomeScreen = () => (
   <View className="bg-background flex-1">
-    <FantaList />
+    <DrinkList />
   </View>
 )
 

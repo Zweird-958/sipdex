@@ -2,20 +2,20 @@ import { db } from "../../db"
 
 export const tastedIdsForUser = async (
   userId: string | undefined,
-  fantaIds: string[],
+  drinkIds: string[],
 ) => {
-  if (!userId || fantaIds.length === 0) {
+  if (!userId || drinkIds.length === 0) {
     return []
   }
 
   const result = await db.query.tastings.findMany({
-    columns: { fantaId: true },
+    columns: { drinkId: true },
     where: (t, operators) =>
       operators.and(
         operators.eq(t.userId, userId),
-        operators.inArray(t.fantaId, fantaIds),
+        operators.inArray(t.drinkId, drinkIds),
       ),
   })
 
-  return result.map(({ fantaId }) => fantaId)
+  return result.map(({ drinkId }) => drinkId)
 }

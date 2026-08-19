@@ -1,0 +1,20 @@
+meta {
+  name: Remove Taste
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/drinks/{{drinkId}}/taste
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+docs {
+  Removes the drink from the logged-in user's tasted list. Requires the
+  `tastings:delete` permission. 401 if not authenticated.
+}

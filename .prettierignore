@@ -5,6 +5,10 @@ node_modules
 .turbo
 data
 packages/api/drizzle
+
+# expo prebuild native output (generated)
+ios
+android
 pnpm-lock.yaml
 .husky/_
 expo-env.d.ts

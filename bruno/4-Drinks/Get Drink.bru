@@ -1,0 +1,22 @@
+meta {
+  name: Get Drink
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/drinks/{{drinkId}}
+  body: none
+  auth: none
+}
+
+headers {
+  ~Authorization: Bearer {{token}}
+}
+
+docs {
+  Public. Full detail for one drink (under `result`), using the `drinkId` saved
+  by "Create Drink". Includes the drink's `brand` ({id, name, logoUrl}). Enable
+  the Authorization header to include the `tasted` flag for the logged-in user.
+  404 if the id doesn't exist.
+}

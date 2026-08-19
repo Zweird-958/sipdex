@@ -1,8 +1,8 @@
 # Fantadex — Backend
 
-REST API for **Fantadex**, an app to catalogue Fanta flavours from around the
+REST API for **Fantadex**, an app to catalogue drink flavours from around the
 world and track the ones you've tasted. Anyone can browse the catalogue; signed-in
-users keep a personal "tasted" list; admins curate flavours and countries.
+users keep a personal "tasted" list; admins curate drinks, brands, and countries.
 
 The API is framework-agnostic on the client side and is built to be consumed by
 an **Expo** mobile app (bearer-token auth, permissive CORS, public image URLs).
@@ -48,15 +48,17 @@ errors are `{ "error": "message", "key": "ERROR_KEY" }`.
 
 ## Features & permissions
 
-| Capability                                        | Anonymous | User | Admin |
-| ------------------------------------------------- | :-------: | :--: | :---: |
-| Browse the full Fanta list                        |    ✅     |  ✅  |  ✅   |
-| View a Fanta's detail (flavour, countries, image) |    ✅     |  ✅  |  ✅   |
-| See a `tasted` flag on each Fanta                 |     —     |  ✅  |  ✅   |
-| Add / remove a Fanta from the tasted list         |     —     |  ✅  |  ✅   |
-| View own tasted list                              |     —     |  ✅  |  ✅   |
-| Create a country                                  |     —     |  —   |  ✅   |
-| Create a Fanta (image + countries + flavour)      |     —     |  —   |  ✅   |
+| Capability                                               | Anonymous | User | Admin |
+| -------------------------------------------------------- | :-------: | :--: | :---: |
+| Browse the full drink list                               |    ✅     |  ✅  |  ✅   |
+| View a drink's detail (flavour, brand, countries, image) |    ✅     |  ✅  |  ✅   |
+| See a `tasted` flag on each drink                        |     —     |  ✅  |  ✅   |
+| Add / remove a drink from the tasted list                |     —     |  ✅  |  ✅   |
+| View own tasted list                                     |     —     |  ✅  |  ✅   |
+| Browse the brand list                                    |    ✅     |  ✅  |  ✅   |
+| Create a country                                         |     —     |  —   |  ✅   |
+| Create a brand (name + logo)                             |     —     |  —   |  ✅   |
+| Create a drink (image + brand + countries + flavour)     |     —     |  —   |  ✅   |
 
 Roles come from better-auth's admin plugin. New accounts default to `user`; see
 [Authentication](#authentication) for promoting an admin.
@@ -86,18 +88,20 @@ use the `backend/` form.
 # From the repo root (fantadex/): installs all packages + Git hooks
 pnpm install
 
-cd backend
-
-# .env already exists (copied from .env.example). Adjust it if a port is taken.
-cp .env.example .env
+# Local config (matches the docker-compose defaults). Adjust if a port is taken.
+cp .env.local.example .env.local
 
 # Start PostgreSQL 18 and RustFS (data persists under ./data)
 pnpm docker:up
 
+# Create the S3 bucket images are stored in (see "Create the storage bucket").
+# Only needed once — the data volume persists it afterwards.
+
 # Create the database tables
 pnpm db:migrate
 
-# (Optional) seed 7 countries, 5 Fanta, 2 users, and some tastings
+# (Optional) seed countries, brands, drinks, users, and some tastings.
+# Requires the bucket to exist first (seed uploads real images).
 pnpm seed
 
 # Run the API with hot reload
@@ -112,7 +116,7 @@ all routes under `/api`. Quick check:
 
 ```bash
 curl http://localhost:3000/            # {"name":"fantadex-backend","status":"ok"}
-curl http://localhost:3000/api/fanta   # {"result":[],"meta":{}}
+curl http://localhost:3000/api/drinks  # {"result":[],"meta":{}}
 ```
 
 `pnpm seed` creates two ready-to-use accounts (both password `Password123!`):
@@ -130,6 +134,61 @@ Service endpoints:
 | PostgreSQL      | localhost:5432            |
 | RustFS (S3 API) | http://localhost:9000     |
 | RustFS console  | http://localhost:9001     |
+
+### Create the storage bucket
+
+RustFS starts empty — you must create the bucket named by `S3_BUCKET_NAME`
+(`fanta-images` by default) once, and make it public-read so images load via
+`S3_PUBLIC_URL`. Do it whichever way you prefer; the bucket then persists in the
+`./data/rustfs` volume across restarts.
+
+**Option A — RustFS web console (no tooling):**
+
+1. Open the console at **http://localhost:9001** and sign in with
+   `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` (default `rustfsadmin` /
+   `rustfsadmin`).
+2. Create a bucket named **`fanta-images`** (must match `S3_BUCKET_NAME`).
+3. Set its access policy to **public / read-only** so objects are served
+   anonymously over `S3_PUBLIC_URL`.
+
+**Option B — AWS CLI** (RustFS is S3-compatible):
+
+```bash
+export AWS_ACCESS_KEY_ID=rustfsadmin
+export AWS_SECRET_ACCESS_KEY=rustfsadmin
+export AWS_REGION=auto
+
+# Create the bucket
+aws --endpoint-url http://localhost:9000 s3 mb s3://fanta-images
+
+# Allow anonymous reads (so <S3_PUBLIC_URL>/... serves images)
+aws --endpoint-url http://localhost:9000 s3api put-bucket-policy \
+  --bucket fanta-images \
+  --policy '{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "PublicRead",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::fanta-images/*"
+      }
+    ]
+  }'
+```
+
+**Option C — MinIO client (`mc`):**
+
+```bash
+mc alias set local http://localhost:9000 rustfsadmin rustfsadmin
+mc mb local/fanta-images
+mc anonymous set download local/fanta-images   # public read
+```
+
+> Non-local environments: create the same bucket on your real S3 provider and
+> point `S3_URL`, `S3_BUCKET_NAME`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`,
+> and `S3_PUBLIC_URL` at it in `.env.development` / `.env.production`.
 
 ### Docker data
 
@@ -164,7 +223,7 @@ All variables live in `.env` (see `.env.example` for the template).
 | `S3_PORT`              | `9000`                                | Host port mapped to the RustFS S3 API (Docker only)                |
 | `S3_CONSOLE_PORT`      | `9001`                                | Host port mapped to the RustFS web console (Docker only)           |
 | `S3_URL`               | `http://localhost:9000`               | S3 API endpoint used by the AWS SDK client                         |
-| `S3_BUCKET_NAME`       | `fanta-images`                        | Bucket for Fanta images                                            |
+| `S3_BUCKET_NAME`       | `fanta-images`                        | Bucket for drink and brand images                                  |
 | `S3_ACCESS_KEY_ID`     | `rustfsadmin`                         | S3 access key                                                      |
 | `S3_SECRET_ACCESS_KEY` | `rustfsadmin`                         | S3 secret key                                                      |
 | `S3_PUBLIC_URL`        | `http://localhost:9000/fanta-images/` | Public base URL images are served from (trailing slash required)   |
@@ -176,21 +235,21 @@ server refuses to boot on invalid config.
 
 ## Scripts
 
-| Script             | Description                                        |
-| ------------------ | -------------------------------------------------- |
-| `pnpm dev`         | Run the API with hot reload (tsx watch)            |
-| `pnpm start`       | Run the API once                                   |
-| `pnpm typecheck`   | `tsc --noEmit`                                     |
-| `pnpm lint`        | ESLint                                             |
-| `pnpm lint:fix`    | ESLint with `--fix`                                |
-| `pnpm format`      | Prettier check                                     |
-| `pnpm format:fix`  | Prettier write                                     |
-| `pnpm db:generate` | Generate a SQL migration from the schema           |
-| `pnpm db:migrate`  | Apply pending migrations                           |
-| `pnpm db:push`     | Push the schema directly (no migration files)      |
-| `pnpm db:studio`   | Open Drizzle Studio                                |
-| `pnpm make-admin`  | Promote a user to admin: `pnpm make-admin <email>` |
-| `pnpm seed`        | Reset & seed countries, Fanta, users, and tastings |
+| Script             | Description                                         |
+| ------------------ | --------------------------------------------------- |
+| `pnpm dev`         | Run the API with hot reload (tsx watch)             |
+| `pnpm start`       | Run the API once                                    |
+| `pnpm typecheck`   | `tsc --noEmit`                                      |
+| `pnpm lint`        | ESLint                                              |
+| `pnpm lint:fix`    | ESLint with `--fix`                                 |
+| `pnpm format`      | Prettier check                                      |
+| `pnpm format:fix`  | Prettier write                                      |
+| `pnpm db:generate` | Generate a SQL migration from the schema            |
+| `pnpm db:migrate`  | Apply pending migrations                            |
+| `pnpm db:push`     | Push the schema directly (no migration files)       |
+| `pnpm db:studio`   | Open Drizzle Studio                                 |
+| `pnpm make-admin`  | Promote a user to admin: `pnpm make-admin <email>`  |
+| `pnpm seed`        | Reset & seed countries, drinks, users, and tastings |
 
 ### Git hooks
 
@@ -222,7 +281,7 @@ fantadex/                         Repo root (pnpm workspace)
         ├── env.ts                Zod-validated environment
         ├── storage.ts            S3 upload + image URL + bucket bootstrap
         ├── auth/                 better-auth config + access-control roles
-        ├── types/                All shared types (fanta, country, http, db)
+        ├── types/                All shared types (drink, brand, country, http, db)
         ├── db/
         │   ├── index.ts          Drizzle client (pg Pool)
         │   ├── utils.ts          Shared columns (uuid id + timestamps)
@@ -237,9 +296,10 @@ fantadex/                         Repo root (pnpm workspace)
         │   └── auth.ts           optionalAuth / auth / admin
         ├── schemas/              Zod request schemas (per scope)
         ├── routes/
-        │   ├── fanta.ts          /fanta
+        │   ├── drinks.ts         /drinks
+        │   ├── brands.ts         /brands
         │   ├── countries.ts      /countries
-        │   └── tastings.ts       /me/tastings, /fanta/:id/taste
+        │   └── tastings.ts       /me/tastings, /drinks/:id/taste
         └── services/             DB queries + DTO serialization
 ```
 
@@ -253,10 +313,12 @@ better-auth owns `users`, `sessions`, `accounts`, and `verifications`. The app a
 - **countries** — `id`, `name` (unique), `code` (ISO 3166-1 alpha-2), timestamps.
   Names are validated against the ISO country list on create, so `"germany"`,
   `"Germany"`, `"DE"`, and `"DEU"` all resolve to `{ name: "Germany", code: "DE" }`.
-- **fanta** — `id`, `flavour` (unique), `imageKey` (S3/RustFS object key), timestamps.
-- **fanta_countries** — many-to-many join between `fanta` and `countries`
-  (the countries a flavour is sold in).
-- **tastings** — many-to-many join between `users` and `fanta` (a user's tasted
+- **brands** — `id`, `name` (unique), `logoKey` (S3/RustFS object key), timestamps.
+- **drinks** — `id`, `flavour` (unique), `imageKey` (S3/RustFS object key),
+  `brandId` (FK → `brands.id`, required), timestamps.
+- **drink_countries** — many-to-many join between `drinks` and `countries`
+  (columns `drink_id`, `country_id`; the countries a flavour is sold in).
+- **tastings** — many-to-many join between `users` and `drinks` (a user's tasted
   list), with `tastedAt`.
 
 App tables share `id` (uuid), `createdAt`, `updatedAt`, and `deletedAt` columns
@@ -274,7 +336,8 @@ and **bearer** plugins.
   requests — ideal for mobile clients that don't use cookies.
 - **Roles & permissions**: the admin plugin uses access-control roles
   ([src/auth/permissions.ts](src/auth/permissions.ts)). `user` may
-  create/delete/list tastings; `admin` additionally creates countries and Fanta.
+  create/delete/list tastings; `admin` additionally creates countries, brands,
+  and drinks.
   Routes enforce this via the `isAuthorized({ resource: [action] })` middleware.
 - **Roles**: new users are `user`. Get an admin either by running `pnpm seed`
   (creates `admin@fantadex.io`) or by promoting an existing account:
@@ -324,9 +387,42 @@ and return its own shapes.
 `{ "name": "Germany" }`. `400` if the name isn't a real country, `409` if it
 already exists.
 
-### Fanta
+### Brands
 
-**`GET /fanta`** — public. Lists all Fanta. Include a bearer token to get the
+**`GET /brands`** — public. Lists brands.
+
+```json
+{
+  "result": [
+    {
+      "id": "a1b2…-uuid",
+      "name": "Fanta",
+      "logoUrl": "http://localhost:9000/fanta-images/brands/fanta.png"
+    }
+  ],
+  "meta": {}
+}
+```
+
+**`POST /brands`** — requires `brands:create` (admin). `multipart/form-data`:
+
+| Field   | Type   | Notes                           |
+| ------- | ------ | ------------------------------- |
+| `name`  | string | required, unique                |
+| `image` | file   | required; png or jpeg, max 5 MB |
+
+```bash
+curl -X POST http://localhost:3000/api/brands \
+  -H "Authorization: Bearer <admin-token>" \
+  -F name=Fanta \
+  -F image=@/path/to/fanta-logo.png
+```
+
+Returns the created brand `{ id, name, logoUrl }`.
+
+### Drinks
+
+**`GET /drinks`** — public. Lists all drinks. Include a bearer token to get the
 `tasted` flag for that user.
 
 ```json
@@ -335,7 +431,12 @@ already exists.
     {
       "id": "0f1c6122-…-uuid",
       "flavour": "Orange",
-      "imageUrl": "http://localhost:9000/fanta-images/fanta/orange.png",
+      "imageUrl": "http://localhost:9000/fanta-images/drinks/orange.png",
+      "brand": {
+        "id": "a1b2…-uuid",
+        "name": "Fanta",
+        "logoUrl": "http://localhost:9000/fanta-images/brands/fanta.png"
+      },
       "countries": [
         { "id": "b3a…-uuid", "name": "Germany", "code": "DE", "createdAt": "…" }
       ],
@@ -347,33 +448,35 @@ already exists.
 }
 ```
 
-**`GET /fanta/:id`** — public. Same shape as one list item. `404` if not found.
+**`GET /drinks/:id`** — public. Same shape as one list item. `404` if not found.
 
-**`POST /fanta`** — requires `fanta:create` (admin). `multipart/form-data`:
+**`POST /drinks`** — requires `drinks:create` (admin). `multipart/form-data`:
 
 | Field          | Type   | Notes                                                 |
 | -------------- | ------ | ----------------------------------------------------- |
 | `flavour`      | string | required, unique                                      |
+| `brandId`      | uuid   | required; must reference an existing brand            |
 | `countryCodes` | string | ISO codes, comma-separated (e.g. `DE,FR`); must exist |
 | `image`        | file   | required; png or jpeg, max 5 MB                       |
 
 ```bash
-curl -X POST http://localhost:3000/api/fanta \
+curl -X POST http://localhost:3000/api/drinks \
   -H "Authorization: Bearer <admin-token>" \
   -F flavour=Orange \
+  -F brandId=a1b2c3d4-…-uuid \
   -F countryCodes=DE,FR \
   -F image=@/path/to/orange.png
 ```
 
-Returns the created Fanta with a public `imageUrl`.
+Returns the created drink with `{ id, flavour, imageUrl, brand, countries, tasted }`.
 
 ### Tastings
 
-| Method | Path               | Permission        | Description                     |
-| ------ | ------------------ | ----------------- | ------------------------------- |
-| GET    | `/me/tastings`     | `tastings:list`   | Own tasted list, newest first   |
-| POST   | `/fanta/:id/taste` | `tastings:create` | Add to tasted list (idempotent) |
-| DELETE | `/fanta/:id/taste` | `tastings:delete` | Remove from tasted list         |
+| Method | Path                | Permission        | Description                     |
+| ------ | ------------------- | ----------------- | ------------------------------- |
+| GET    | `/me/tastings`      | `tastings:list`   | Own tasted list, newest first   |
+| POST   | `/drinks/:id/taste` | `tastings:create` | Add to tasted list (idempotent) |
+| DELETE | `/drinks/:id/taste` | `tastings:delete` | Remove from tasted list         |
 
 ### Errors
 
@@ -390,7 +493,7 @@ The `./bruno` folder is a ready-made [Bruno](https://www.usebruno.com/) collecti
 1. Run `pnpm seed` so the admin account (`admin@fantadex.io`) exists.
 2. Open `./bruno` in Bruno and select the **Local** environment. The collection
    variable `baseUrl` already includes the `/api` base path.
-3. Work through the numbered folders (Auth → Countries → Fanta → Tastings → Session).
+3. Work through the numbered folders (Auth → Countries → Brands → Drinks → Tastings → Session).
    `1-Auth > Sign In` captures the bearer `token` into the environment
    automatically; every authenticated request reuses it.
 

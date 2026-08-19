@@ -1,0 +1,21 @@
+meta {
+  name: List Drinks
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/drinks
+  body: none
+  auth: none
+}
+
+headers {
+  ~Authorization: Bearer {{token}}
+}
+
+docs {
+  Public. Lists all drinks (under `result`) with their brand, countries and a
+  public `imageUrl`. Enable the Authorization header (click the checkbox) to
+  also get the per-item `tasted` flag for the logged-in user.
+}

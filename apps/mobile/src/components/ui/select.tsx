@@ -84,11 +84,14 @@ function SelectContent({
   children,
   position = "popper",
   portalHost,
+  style,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content> & {
   className?: string
   portalHost?: string
 }) {
+  const { triggerPosition } = SelectPrimitive.useRootContext()
+
   return (
     <SelectPrimitive.Portal hostName={portalHost}>
       <FullWindowOverlay>
@@ -105,10 +108,10 @@ function SelectContent({
             <TextClassContext.Provider value="text-popover-foreground">
               <SelectPrimitive.Content
                 className={cn(
-                  "bg-popover border-border relative z-50 min-w-[8rem] rounded-md border shadow-md shadow-black/5",
+                  "bg-popover border-border relative z-50 rounded-md border shadow-md shadow-black/5",
                   Platform.select({
                     web: cn(
-                      "animate-in fade-in-0 zoom-in-95 origin-(--radix-select-content-transform-origin) max-h-52 overflow-y-auto overflow-x-hidden",
+                      "animate-in fade-in-0 zoom-in-95 origin-(--radix-select-content-transform-origin) max-h-52 w-[var(--radix-select-trigger-width)] overflow-y-auto overflow-x-hidden",
                       props.side === "bottom" && "slide-in-from-top-2",
                       props.side === "top" && "slide-in-from-bottom-2",
                     ),
@@ -124,6 +127,11 @@ function SelectContent({
                   className,
                 )}
                 position={position}
+                // Match the dropdown width to the trigger on native.
+                style={{
+                  ...(triggerPosition ? { width: triggerPosition.width } : {}),
+                  ...style,
+                }}
                 {...props}
               >
                 <SelectScrollUpButton />

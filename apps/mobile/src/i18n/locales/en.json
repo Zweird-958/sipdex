@@ -1,7 +1,7 @@
 {
   "welcome": "Welcome to Fantadex",
   "retry": "Retry",
-  "fanta": {
+  "drink": {
     "markTasted": "Mark as tasted",
     "markUntasted": "Mark as not tasted"
   },
@@ -12,8 +12,28 @@
   },
   "admin": {
     "tabs": {
+      "brand": "Brand",
       "country": "Country",
-      "fanta": "Fanta"
+      "drink": "Drink"
+    },
+    "image": {
+      "pickImage": "Library",
+      "takePhoto": "Camera",
+      "errors": {
+        "cameraDenied": "Camera permission is required"
+      }
+    },
+    "brands": {
+      "title": "Add a brand",
+      "label": "Brand",
+      "placeholder": "e.g. Coca-Cola",
+      "image": "Logo",
+      "submit": "Add brand",
+      "success": "{{name}} added",
+      "errors": {
+        "nameRequired": "Please enter a brand name",
+        "imageRequired": "Please add a logo"
+      }
     },
     "countries": {
       "title": "Add a country",
@@ -25,22 +45,22 @@
         "nameRequired": "Please enter a country"
       }
     },
-    "fanta": {
-      "title": "Add a fanta",
+    "drink": {
+      "title": "Add a drink",
       "flavour": "Flavour",
+      "brand": "Brand",
+      "brandPlaceholder": "Select a brand",
       "countries": "Countries",
       "image": "Image",
-      "pickImage": "Library",
-      "takePhoto": "Camera",
-      "submit": "Add fanta",
+      "submit": "Add drink",
       "success": "{{flavour}} added",
       "searchPlaceholder": "Search countries",
       "empty": "No country found",
       "errors": {
         "flavourRequired": "Please enter a flavour",
+        "brandRequired": "Please select a brand",
         "countriesRequired": "Please select at least one country",
-        "imageRequired": "Please add an image",
-        "cameraDenied": "Camera permission is required"
+        "imageRequired": "Please add an image"
       }
     }
   },
@@ -99,8 +119,11 @@
       "BAD_REQUEST": "Unknown country — use a code like FR or a name like France",
       "CONFLICT": "This country already exists"
     },
-    "fanta": {
-      "BAD_REQUEST": "Please select at least one valid country",
+    "brands": {
+      "CONFLICT": "This brand already exists"
+    },
+    "drink": {
+      "BAD_REQUEST": "Please select a valid brand and country",
       "CONFLICT": "This flavour already exists"
     }
   }
