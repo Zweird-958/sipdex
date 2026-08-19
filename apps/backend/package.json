@@ -1,5 +1,5 @@
 {
-  "name": "@fantadex/backend",
+  "name": "@sipdex/backend",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,12 +11,12 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@fantadex/api": "workspace:*",
+    "@sipdex/api": "workspace:*",
     "@hono/node-server": "^2.0.8"
   },
   "devDependencies": {
-    "@fantadex/eslint": "workspace:*",
-    "@fantadex/typescript": "workspace:*",
+    "@sipdex/eslint": "workspace:*",
+    "@sipdex/typescript": "workspace:*",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "tsx": "^4.7.1",

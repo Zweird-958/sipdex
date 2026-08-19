@@ -1,7 +1,7 @@
-import baseConfig from "@fantadex/eslint/base"
-import reactConfig from "@fantadex/eslint/react"
+import baseConfig from "@sipdex/eslint/base"
+import reactConfig from "@sipdex/eslint/react"
 
-/** @type {import('@fantadex/eslint').Config} */
+/** @type {import('@sipdex/eslint').Config} */
 export default [
   {
     ignores: ["dist", ".expo", "expo-env.d.ts", "nativewind-env.d.ts"],

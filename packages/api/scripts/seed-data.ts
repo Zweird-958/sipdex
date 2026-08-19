@@ -33,13 +33,13 @@ export const USER_SEED: {
 }[] = [
   {
     name: "Admin",
-    email: "admin@fantadex.io",
+    email: "admin@sipdex.io",
     password: "Password123!",
     role: "admin",
   },
   {
     name: "User",
-    email: "user@fantadex.io",
+    email: "user@sipdex.io",
     password: "Password123!",
     role: "user",
   },

@@ -8,7 +8,7 @@ vars:pre-request {
 }
 
 docs {
-  # Fantadex API
+  # Sipdex API
   
   Applies a trusted `Origin` header to every request. better-auth enforces a
   CSRF origin check on cookie-bearing requests, and the Bruno client keeps a
@@ -20,7 +20,7 @@ docs {
   
   ## Getting started
   1. Seed the database from the backend: `pnpm seed` (creates
-     `admin@fantadex.io`, password `Password123!`, as an admin).
+     `admin@sipdex.io`, password `Password123!`, as an admin).
   2. Select the `Local` environment (top-right).
   3. Run `1-Auth > Sign In` (saves `token`, used by every authed request).
   4. Create countries (`2-Countries`) + brands (`3-Brands`) + drinks

@@ -1,5 +1,5 @@
 {
-  "name": "@fantadex/mobile",
+  "name": "@sipdex/mobile",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "private": true,
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.23",
-    "@fantadex/api": "workspace:*",
+    "@sipdex/api": "workspace:*",
     "@hookform/resolvers": "^5.4.0",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@rn-primitives/label": "^1.5.2",
@@ -62,8 +62,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@fantadex/eslint": "workspace:*",
-    "@fantadex/typescript": "workspace:*",
+    "@sipdex/eslint": "workspace:*",
+    "@sipdex/typescript": "workspace:*",
     "@types/react": "~19.2.2",
     "eslint": "catalog:",
     "tailwindcss": "^3.4.19",

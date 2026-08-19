@@ -6,7 +6,7 @@ import { useHeaderOptions } from "@/hooks/use-header-options"
 import { useIsAdmin } from "@/hooks/use-is-admin"
 import { useThemeColors } from "@/hooks/use-theme-colors"
 
-const HOME_TITLE = "Fantadex"
+const HOME_TITLE = "Sipdex"
 
 const TabsLayout = () => {
   const { t } = useTranslation()

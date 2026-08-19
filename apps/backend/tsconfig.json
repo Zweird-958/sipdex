@@ -1,5 +1,5 @@
 {
-  "extends": "@fantadex/typescript/internal-package.json",
+  "extends": "@sipdex/typescript/internal-package.json",
   "compilerOptions": {
     "types": ["node"],
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",

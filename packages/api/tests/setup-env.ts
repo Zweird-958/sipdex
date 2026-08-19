@@ -14,9 +14,8 @@ process.env.NODE_ENV = "test"
 
 const defaults: Record<string, string> = {
   BASE_URL: "http://localhost:3000",
-  DATABASE_URL: "postgresql://fantadex:fantadex@localhost:5439/fantadex",
-  DATABASE_URL_TEST:
-    "postgresql://fantadex:fantadex@localhost:5440/fantadex_test",
+  DATABASE_URL: "postgresql://sipdex:sipdex@localhost:5439/sipdex",
+  DATABASE_URL_TEST: "postgresql://sipdex:sipdex@localhost:5440/sipdex_test",
   BETTER_AUTH_SECRET: "test-secret",
   MOBILE_ORIGIN: "mobile://",
   S3_URL: "http://localhost:9000",

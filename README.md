@@ -1,6 +1,6 @@
-# Fantadex
+# Sipdex
 
-Monorepo for **Fantadex** — an app to catalogue drinks from multiple brands
+Monorepo for **Sipdex** — an app to catalogue drinks from multiple brands
 (Coca-Cola, Red Bull, Monster, Fanta…) around the world and track the ones
 you've tasted.
 
@@ -32,7 +32,7 @@ Config is loaded from a single `.env` file at the repo root. Copy the committed
 `.env.example` template, fill in the values, then run the API:
 
 ```bash
-pnpm --filter @fantadex/backend start
+pnpm --filter @sipdex/backend start
 ```
 
 The real `.env` file is git-ignored; only the `.env.example` template is
