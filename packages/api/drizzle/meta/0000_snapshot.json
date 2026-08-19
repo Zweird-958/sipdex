@@ -1,5 +1,5 @@
 {
-  "id": "06cf24b4-9c45-4c49-afcf-7d4b0aa4620a",
+  "id": "881a0848-fb6a-4c50-8741-48938f9f2891",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,6 +14,12 @@
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
+        },
+        "issuer": {
+          "name": "issuer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "account_id": {
           "name": "account_id",
@@ -90,6 +96,27 @@
         }
       },
       "indexes": {
+        "accounts_issuer_accountId_uidx": {
+          "name": "accounts_issuer_accountId_uidx",
+          "columns": [
+            {
+              "expression": "issuer",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "account_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "accounts_userId_idx": {
           "name": "accounts_userId_idx",
           "columns": [
@@ -394,8 +421,136 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.fanta": {
-      "name": "fanta",
+    "public.brands": {
+      "name": "brands",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logo_key": {
+          "name": "logo_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "brands_name_unique": {
+          "name": "brands_name_unique",
+          "columns": [
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.drink_countries": {
+      "name": "drink_countries",
+      "schema": "",
+      "columns": {
+        "drink_id": {
+          "name": "drink_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country_id": {
+          "name": "country_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "drink_countries_drink_id_drinks_id_fk": {
+          "name": "drink_countries_drink_id_drinks_id_fk",
+          "tableFrom": "drink_countries",
+          "tableTo": "drinks",
+          "columnsFrom": [
+            "drink_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "drink_countries_country_id_countries_id_fk": {
+          "name": "drink_countries_country_id_countries_id_fk",
+          "tableFrom": "drink_countries",
+          "tableTo": "countries",
+          "columnsFrom": [
+            "country_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "drink_countries_drink_id_country_id_pk": {
+          "name": "drink_countries_drink_id_country_id_pk",
+          "columns": [
+            "drink_id",
+            "country_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.drinks": {
+      "name": "drinks",
       "schema": "",
       "columns": {
         "id": {
@@ -436,36 +591,9 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "fanta_flavour_unique": {
-          "name": "fanta_flavour_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "flavour"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.fanta_countries": {
-      "name": "fanta_countries",
-      "schema": "",
-      "columns": {
-        "fanta_id": {
-          "name": "fanta_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
         },
-        "country_id": {
-          "name": "country_id",
+        "brand_id": {
+          "name": "brand_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -473,43 +601,30 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "fanta_countries_fanta_id_fanta_id_fk": {
-          "name": "fanta_countries_fanta_id_fanta_id_fk",
-          "tableFrom": "fanta_countries",
-          "tableTo": "fanta",
+        "drinks_brand_id_brands_id_fk": {
+          "name": "drinks_brand_id_brands_id_fk",
+          "tableFrom": "drinks",
+          "tableTo": "brands",
           "columnsFrom": [
-            "fanta_id"
+            "brand_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "fanta_countries_country_id_countries_id_fk": {
-          "name": "fanta_countries_country_id_countries_id_fk",
-          "tableFrom": "fanta_countries",
-          "tableTo": "countries",
-          "columnsFrom": [
-            "country_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
+          "onDelete": "restrict",
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "fanta_countries_fanta_id_country_id_pk": {
-          "name": "fanta_countries_fanta_id_country_id_pk",
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "drinks_flavour_unique": {
+          "name": "drinks_flavour_unique",
+          "nullsNotDistinct": false,
           "columns": [
-            "fanta_id",
-            "country_id"
+            "flavour"
           ]
         }
       },
-      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -592,8 +707,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "fanta_id": {
-          "name": "fanta_id",
+        "drink_id": {
+          "name": "drink_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -620,12 +735,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "tastings_fanta_id_fanta_id_fk": {
-          "name": "tastings_fanta_id_fanta_id_fk",
+        "tastings_drink_id_drinks_id_fk": {
+          "name": "tastings_drink_id_drinks_id_fk",
           "tableFrom": "tastings",
-          "tableTo": "fanta",
+          "tableTo": "drinks",
           "columnsFrom": [
-            "fanta_id"
+            "drink_id"
           ],
           "columnsTo": [
             "id"
@@ -635,11 +750,11 @@
         }
       },
       "compositePrimaryKeys": {
-        "tastings_user_id_fanta_id_pk": {
-          "name": "tastings_user_id_fanta_id_pk",
+        "tastings_user_id_drink_id_pk": {
+          "name": "tastings_user_id_drink_id_pk",
           "columns": [
             "user_id",
-            "fanta_id"
+            "drink_id"
           ]
         }
       },

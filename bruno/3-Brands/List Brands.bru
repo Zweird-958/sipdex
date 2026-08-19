@@ -1,0 +1,15 @@
+meta {
+  name: List Brands
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/brands
+  body: none
+  auth: none
+}
+
+docs {
+  Public. Lists every available brand (id, name, logoUrl) under `result`.
+}

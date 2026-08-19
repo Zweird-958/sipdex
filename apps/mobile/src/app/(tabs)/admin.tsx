@@ -2,8 +2,9 @@ import { Redirect } from "expo-router"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ScrollView } from "react-native"
+import { CreateBrandForm } from "@/components/admin/create-brand-form"
 import { CreateCountryForm } from "@/components/admin/create-country-form"
-import { CreateFantaForm } from "@/components/admin/create-fanta-form"
+import { CreateDrinkForm } from "@/components/admin/create-drink-form"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Text } from "@/components/ui/text"
 import { useIsAdmin } from "@/hooks/use-is-admin"
@@ -11,7 +12,7 @@ import { useIsAdmin } from "@/hooks/use-is-admin"
 const AdminScreen = () => {
   const { t } = useTranslation()
   const isAdmin = useIsAdmin()
-  const [tab, setTab] = useState("country")
+  const [tab, setTab] = useState("brand")
 
   if (!isAdmin) {
     return <Redirect href="/" />
@@ -25,18 +26,24 @@ const AdminScreen = () => {
     >
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="w-full">
-          <TabsTrigger value="country" className="basis-1/2">
+          <TabsTrigger value="brand" className="basis-1/3">
+            <Text>{t("admin.tabs.brand")}</Text>
+          </TabsTrigger>
+          <TabsTrigger value="country" className="basis-1/3">
             <Text>{t("admin.tabs.country")}</Text>
           </TabsTrigger>
-          <TabsTrigger value="fanta" className="basis-1/2">
-            <Text>{t("admin.tabs.fanta")}</Text>
+          <TabsTrigger value="drink" className="basis-1/3">
+            <Text>{t("admin.tabs.drink")}</Text>
           </TabsTrigger>
         </TabsList>
+        <TabsContent value="brand">
+          <CreateBrandForm />
+        </TabsContent>
         <TabsContent value="country">
           <CreateCountryForm />
         </TabsContent>
-        <TabsContent value="fanta">
-          <CreateFantaForm />
+        <TabsContent value="drink">
+          <CreateDrinkForm />
         </TabsContent>
       </Tabs>
     </ScrollView>

@@ -6,8 +6,8 @@ import { env } from "@/lib/env"
 type FetchParams = Parameters<typeof fetch>
 
 export const client = hc<AppType>(env.EXPO_PUBLIC_API_URL, {
-  headers() {
-    const cookies = authClient.getCookie()
+  async headers() {
+    const cookies = await authClient.getCookie()
 
     return { Cookie: cookies }
   },

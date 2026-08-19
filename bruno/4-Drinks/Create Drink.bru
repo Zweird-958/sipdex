@@ -1,0 +1,45 @@
+meta {
+  name: Create Drink
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/drinks
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+body:multipart-form {
+  flavour: Orange
+  brandId: {{brandId}}
+  countryCodes: {{countryCodes}}
+  image: @file(sample.png)
+}
+
+script:post-response {
+  // Remember the created drink's id for Get Drink + the Tastings requests.
+  const drink = res.getBody()?.result;
+  if (drink?.id) {
+    bru.setEnvVar("drinkId", drink.id);
+  }
+}
+
+docs {
+  Requires the `drinks:create` permission (admin). multipart/form-data:
+    - flavour       (string, required, unique)
+    - brandId       (uuid, required — an existing brand; create one via 3-Brands)
+    - countryCodes  (ISO codes, comma-separated — e.g. "DE,FR"; must exist)
+    - image         (file, required — png or jpeg, max 5 MB)
+
+  `brandId` defaults to `{{brandId}}`, saved by `3-Brands > Create Brand`.
+  `countryCodes` defaults to `{{countryCodes}}` from the Local environment
+  (`DE,FR`, both created by `pnpm seed`). The sample image lives at the
+  collection root (sample.png). Returns 409 if the flavour already exists,
+  403 for non-admins. Saves the created drink's id (from `result.id`) to
+  `drinkId`.
+}

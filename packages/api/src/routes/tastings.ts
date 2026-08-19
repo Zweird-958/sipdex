@@ -1,10 +1,10 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { isAuthorized } from "../handlers/is-authorized"
-import { listTastedFanta } from "../lib/fanta/list-tasted-fanta"
+import { listTastedDrinks } from "../lib/drinks/list-tasted-drink"
 import { HTTP_CREATED_STATUS } from "../lib/http/constants"
 import { addTasting } from "../lib/tastings/add-tasting"
-import { fantaExists } from "../lib/tastings/fanta-exists"
+import { drinkExists } from "../lib/tastings/drink-exists"
 import { removeTasting } from "../lib/tastings/remove-tasting"
 import { idParamSchema } from "../schemas/common"
 import type { AppEnv } from "../types/http"
@@ -13,33 +13,33 @@ export const tastingsRoutes = new Hono<AppEnv>()
   .get(
     "/tastings",
     ...isAuthorized({ tastings: ["list"] }),
-    async ({ var: { send, user } }) => send(await listTastedFanta(user.id)),
+    async ({ var: { send, user } }) => send(await listTastedDrinks(user.id)),
   )
   .post(
-    "/fanta/:id/taste",
+    "/drinks/:id/taste",
     ...isAuthorized({ tastings: ["create"] }),
     zValidator("param", idParamSchema),
     async ({ req, var: { send, fail, user } }) => {
-      const { id: fantaId } = req.valid("param")
+      const { id: drinkId } = req.valid("param")
 
-      if (!(await fantaExists(fantaId))) {
-        return fail("notFound", "Fanta not found")
+      if (!(await drinkExists(drinkId))) {
+        return fail("notFound", "Drink not found")
       }
 
-      await addTasting(user.id, fantaId)
+      await addTasting(user.id, drinkId)
 
-      return send({ fantaId, tasted: true }, {}, HTTP_CREATED_STATUS)
+      return send({ drinkId, tasted: true }, {}, HTTP_CREATED_STATUS)
     },
   )
   .delete(
-    "/fanta/:id/taste",
+    "/drinks/:id/taste",
     ...isAuthorized({ tastings: ["delete"] }),
     zValidator("param", idParamSchema),
     async ({ req, var: { send, user } }) => {
-      const { id: fantaId } = req.valid("param")
+      const { id: drinkId } = req.valid("param")
 
-      await removeTasting(user.id, fantaId)
+      await removeTasting(user.id, drinkId)
 
-      return send({ fantaId, tasted: false })
+      return send({ drinkId, tasted: false })
     },
   )

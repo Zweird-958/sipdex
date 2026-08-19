@@ -1,0 +1,21 @@
+meta {
+  name: Add Taste
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/drinks/{{drinkId}}/taste
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+docs {
+  Adds the drink (`drinkId` from "Create Drink") to the logged-in user's tasted
+  list. Requires the `tastings:create` permission. 404 if the drink doesn't
+  exist, 401 if not authenticated.
+}

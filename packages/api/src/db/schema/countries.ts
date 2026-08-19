@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm"
 import { pgTable, text, uniqueIndex } from "drizzle-orm/pg-core"
 import { commonColumns } from "../utils"
-import { fantaCountries } from "./fanta"
+import { drinkCountries } from "./drinks"
 
 export const countries = pgTable(
   "countries",
@@ -14,5 +14,5 @@ export const countries = pgTable(
 )
 
 export const countriesRelations = relations(countries, ({ many }) => ({
-  fantaCountries: many(fantaCountries),
+  drinkCountries: many(drinkCountries),
 }))

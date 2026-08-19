@@ -1,7 +1,7 @@
 {
   "welcome": "Bienvenue sur Fantadex",
   "retry": "Réessayer",
-  "fanta": {
+  "drink": {
     "markTasted": "Marquer comme goûté",
     "markUntasted": "Marquer comme non goûté"
   },
@@ -12,8 +12,28 @@
   },
   "admin": {
     "tabs": {
+      "brand": "Marque",
       "country": "Pays",
-      "fanta": "Fanta"
+      "drink": "Boisson"
+    },
+    "image": {
+      "pickImage": "Galerie",
+      "takePhoto": "Caméra",
+      "errors": {
+        "cameraDenied": "L'autorisation de la caméra est requise"
+      }
+    },
+    "brands": {
+      "title": "Ajouter une marque",
+      "label": "Marque",
+      "placeholder": "ex. Coca-Cola",
+      "image": "Logo",
+      "submit": "Ajouter la marque",
+      "success": "{{name}} ajoutée",
+      "errors": {
+        "nameRequired": "Veuillez saisir un nom de marque",
+        "imageRequired": "Veuillez ajouter un logo"
+      }
     },
     "countries": {
       "title": "Ajouter un pays",
@@ -25,22 +45,22 @@
         "nameRequired": "Veuillez saisir un pays"
       }
     },
-    "fanta": {
-      "title": "Ajouter un fanta",
+    "drink": {
+      "title": "Ajouter une boisson",
       "flavour": "Parfum",
+      "brand": "Marque",
+      "brandPlaceholder": "Sélectionner une marque",
       "countries": "Pays",
       "image": "Image",
-      "pickImage": "Galerie",
-      "takePhoto": "Caméra",
-      "submit": "Ajouter le fanta",
+      "submit": "Ajouter la boisson",
       "success": "{{flavour}} ajouté",
       "searchPlaceholder": "Rechercher des pays",
       "empty": "Aucun pays trouvé",
       "errors": {
         "flavourRequired": "Veuillez saisir un parfum",
+        "brandRequired": "Veuillez sélectionner une marque",
         "countriesRequired": "Veuillez sélectionner au moins un pays",
-        "imageRequired": "Veuillez ajouter une image",
-        "cameraDenied": "L'autorisation de la caméra est requise"
+        "imageRequired": "Veuillez ajouter une image"
       }
     }
   },
@@ -99,8 +119,11 @@
       "BAD_REQUEST": "Pays inconnu — utilisez un code comme FR ou un nom comme France",
       "CONFLICT": "Ce pays existe déjà"
     },
-    "fanta": {
-      "BAD_REQUEST": "Veuillez sélectionner au moins un pays valide",
+    "brands": {
+      "CONFLICT": "Cette marque existe déjà"
+    },
+    "drink": {
+      "BAD_REQUEST": "Veuillez sélectionner une marque et un pays valides",
       "CONFLICT": "Ce parfum existe déjà"
     }
   }

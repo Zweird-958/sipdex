@@ -5,8 +5,9 @@ import { env } from "./env"
 import { contextVariables, fail, send } from "./lib/http/context"
 import { factory } from "./lib/http/factory"
 import { logger } from "./lib/logger/logger"
+import { brandsRoutes } from "./routes/brands"
 import { countriesRoutes } from "./routes/countries"
-import { fantaRoutes } from "./routes/fanta"
+import { drinksRoutes } from "./routes/drinks"
 import { tastingsRoutes } from "./routes/tastings"
 
 export const createApp = () => {
@@ -35,7 +36,8 @@ export const createApp = () => {
   app.on(["GET", "POST"], "/auth/*", (c) => auth.handler(c.req.raw))
 
   const routes = app
-    .route("/fanta", fantaRoutes)
+    .route("/drinks", drinksRoutes)
+    .route("/brands", brandsRoutes)
     .route("/countries", countriesRoutes)
     .route("/", tastingsRoutes)
 

@@ -1,7 +1,8 @@
 import { createAccessControl } from "better-auth/plugins/access"
 
 const statement = {
-  fanta: ["create"],
+  drinks: ["create"],
+  brands: ["create"],
   countries: ["create"],
   tastings: ["create", "delete", "list"],
 } as const
@@ -14,6 +15,7 @@ export const user = ac.newRole({
 
 export const admin = ac.newRole({
   ...user.statements,
-  fanta: ["create"],
+  drinks: ["create"],
+  brands: ["create"],
   countries: ["create"],
 })

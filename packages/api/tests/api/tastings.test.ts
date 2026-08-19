@@ -2,9 +2,9 @@ import { faker } from "@faker-js/faker"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createApp } from "../../src/app"
 import { auth } from "../../src/auth"
-import { listTastedFanta } from "../../src/lib/fanta/list-tasted-fanta"
+import { listTastedDrinks } from "../../src/lib/drinks/list-tasted-drink"
 import { addTasting } from "../../src/lib/tastings/add-tasting"
-import { fantaExists } from "../../src/lib/tastings/fanta-exists"
+import { drinkExists } from "../../src/lib/tastings/drink-exists"
 import { removeTasting } from "../../src/lib/tastings/remove-tasting"
 import {
   buildAuthUser,
@@ -22,9 +22,9 @@ vi.mock("../../src/auth", () => ({
   },
 }))
 
-vi.mock("../../src/lib/fanta/list-tasted-fanta")
+vi.mock("../../src/lib/drinks/list-tasted-drink")
 vi.mock("../../src/lib/tastings/add-tasting")
-vi.mock("../../src/lib/tastings/fanta-exists")
+vi.mock("../../src/lib/tastings/drink-exists")
 vi.mock("../../src/lib/tastings/remove-tasting")
 
 const app = createApp()
@@ -41,22 +41,27 @@ describe("tastings routes", () => {
   })
 
   describe("GET /api/tastings", () => {
-    it("returns the tasted fanta", async () => {
-      const fanta = {
+    it("returns the tasted drink", async () => {
+      const drink = {
         id: faker.string.uuid(),
         flavour: faker.commerce.productName(),
         imageUrl: faker.internet.url(),
+        brand: {
+          id: faker.string.uuid(),
+          name: faker.company.name(),
+          logoUrl: faker.internet.url(),
+        },
         countries: [],
         tasted: true,
         createdAt: new Date(),
       }
 
-      vi.mocked(listTastedFanta).mockResolvedValue([fanta])
+      vi.mocked(listTastedDrinks).mockResolvedValue([drink])
 
       const response = await app.request("/api/tastings")
 
       expect(response.status).toBe(200)
-      expect(listTastedFanta).toHaveBeenCalledWith(user.id)
+      expect(listTastedDrinks).toHaveBeenCalledWith(user.id)
     })
 
     it("rejects unauthenticated requests", async () => {
@@ -78,29 +83,29 @@ describe("tastings routes", () => {
     })
   })
 
-  describe("POST /api/fanta/:id/taste", () => {
-    it("tastes the fanta", async () => {
-      const fantaId = faker.string.uuid()
+  describe("POST /api/drinks/:id/taste", () => {
+    it("tastes the drink", async () => {
+      const drinkId = faker.string.uuid()
 
-      vi.mocked(fantaExists).mockResolvedValue(true)
+      vi.mocked(drinkExists).mockResolvedValue(true)
 
-      const response = await app.request(`/api/fanta/${fantaId}/taste`, {
+      const response = await app.request(`/api/drinks/${drinkId}/taste`, {
         method: "POST",
       })
 
       expect(response.status).toBe(201)
       expect(await response.json()).toEqual({
-        result: { fantaId, tasted: true },
+        result: { drinkId, tasted: true },
         meta: {},
       })
-      expect(addTasting).toHaveBeenCalledWith(user.id, fantaId)
+      expect(addTasting).toHaveBeenCalledWith(user.id, drinkId)
     })
 
-    it("returns 404 for an unknown fanta", async () => {
-      vi.mocked(fantaExists).mockResolvedValue(false)
+    it("returns 404 for an unknown drink", async () => {
+      vi.mocked(drinkExists).mockResolvedValue(false)
 
       const response = await app.request(
-        `/api/fanta/${faker.string.uuid()}/taste`,
+        `/api/drinks/${faker.string.uuid()}/taste`,
         { method: "POST" },
       )
 
@@ -109,20 +114,20 @@ describe("tastings routes", () => {
     })
   })
 
-  describe("DELETE /api/fanta/:id/taste", () => {
+  describe("DELETE /api/drinks/:id/taste", () => {
     it("removes the tasting", async () => {
-      const fantaId = faker.string.uuid()
+      const drinkId = faker.string.uuid()
 
-      const response = await app.request(`/api/fanta/${fantaId}/taste`, {
+      const response = await app.request(`/api/drinks/${drinkId}/taste`, {
         method: "DELETE",
       })
 
       expect(response.status).toBe(200)
       expect(await response.json()).toEqual({
-        result: { fantaId, tasted: false },
+        result: { drinkId, tasted: false },
         meta: {},
       })
-      expect(removeTasting).toHaveBeenCalledWith(user.id, fantaId)
+      expect(removeTasting).toHaveBeenCalledWith(user.id, drinkId)
     })
 
     it("rejects requests without permission", async () => {
@@ -131,7 +136,7 @@ describe("tastings routes", () => {
       )
 
       const response = await app.request(
-        `/api/fanta/${faker.string.uuid()}/taste`,
+        `/api/drinks/${faker.string.uuid()}/taste`,
         { method: "DELETE" },
       )
 

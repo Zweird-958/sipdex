@@ -1,4 +1,5 @@
 export * from "./auth"
-export * from "./fanta"
+export * from "./brands"
+export * from "./drinks"
 export * from "./countries"
 export * from "./tastings"
