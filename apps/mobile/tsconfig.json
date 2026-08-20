@@ -1,5 +1,5 @@
 {
-  "extends": "@fantadex/typescript/base.json",
+  "extends": "@sipdex/typescript/base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "checkJs": false,

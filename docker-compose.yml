@@ -1,12 +1,12 @@
 services:
   postgres:
     image: postgres:18
-    container_name: fantadex-postgres
+    container_name: sipdex-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-fantadex}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fantadex}
-      POSTGRES_DB: ${POSTGRES_DB:-fantadex}
+      POSTGRES_USER: ${POSTGRES_USER:-sipdex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sipdex}
+      POSTGRES_DB: ${POSTGRES_DB:-sipdex}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
@@ -15,7 +15,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-fantadex} -d ${POSTGRES_DB:-fantadex}",
+          "pg_isready -U ${POSTGRES_USER:-sipdex} -d ${POSTGRES_DB:-sipdex}",
         ]
       interval: 5s
       timeout: 5s
@@ -23,12 +23,12 @@ services:
 
   postgres-test:
     image: postgres:18
-    container_name: fantadex-postgres-test
+    container_name: sipdex-postgres-test
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_TEST_USER:-fantadex}
-      POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD:-fantadex}
-      POSTGRES_DB: ${POSTGRES_TEST_DB:-fantadex_test}
+      POSTGRES_USER: ${POSTGRES_TEST_USER:-sipdex}
+      POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD:-sipdex}
+      POSTGRES_DB: ${POSTGRES_TEST_DB:-sipdex_test}
     ports:
       - "${POSTGRES_TEST_PORT:-5433}:5432"
     volumes:
@@ -37,7 +37,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_TEST_USER:-fantadex} -d ${POSTGRES_TEST_DB:-fantadex_test}",
+          "pg_isready -U ${POSTGRES_TEST_USER:-sipdex} -d ${POSTGRES_TEST_DB:-sipdex_test}",
         ]
       interval: 5s
       timeout: 5s
@@ -45,7 +45,7 @@ services:
 
   rustfs:
     image: rustfs/rustfs:latest
-    container_name: fantadex-rustfs
+    container_name: sipdex-rustfs
     restart: unless-stopped
     environment:
       RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY_ID:-rustfsadmin}

@@ -1,4 +1,4 @@
-import baseConfig from "@fantadex/eslint/base"
+import baseConfig from "@sipdex/eslint/base"
 
-/** @type {import('@fantadex/eslint').Config} */
+/** @type {import('@sipdex/eslint').Config} */
 export default [...baseConfig]

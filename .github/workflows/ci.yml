@@ -80,13 +80,13 @@ jobs:
       postgres:
         image: postgres:18
         env:
-          POSTGRES_USER: fantadex
-          POSTGRES_PASSWORD: fantadex
-          POSTGRES_DB: fantadex_test
+          POSTGRES_USER: sipdex
+          POSTGRES_PASSWORD: sipdex
+          POSTGRES_DB: sipdex_test
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U fantadex -d fantadex_test"
+          --health-cmd "pg_isready -U sipdex -d sipdex_test"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
@@ -94,8 +94,8 @@ jobs:
     env:
       # The integration suite only talks to Postgres; the S3 values just need to
       # satisfy src/env.ts validation (no S3 calls are made).
-      DATABASE_URL: postgresql://fantadex:fantadex@localhost:5432/fantadex_test
-      DATABASE_URL_TEST: postgresql://fantadex:fantadex@localhost:5432/fantadex_test
+      DATABASE_URL: postgresql://sipdex:sipdex@localhost:5432/sipdex_test
+      DATABASE_URL_TEST: postgresql://sipdex:sipdex@localhost:5432/sipdex_test
       BETTER_AUTH_SECRET: test-secret
       BASE_URL: http://localhost:3000
       S3_URL: http://localhost:9000

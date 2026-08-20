@@ -1,5 +1,5 @@
 {
-  "name": "@fantadex/eslint",
+  "name": "@sipdex/eslint",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -21,7 +21,7 @@
     "typescript-eslint": "^8.63.0"
   },
   "devDependencies": {
-    "@fantadex/typescript": "workspace:*",
+    "@sipdex/typescript": "workspace:*",
     "eslint": "catalog:",
     "typescript": "catalog:"
   }

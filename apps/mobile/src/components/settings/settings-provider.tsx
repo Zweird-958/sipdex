@@ -14,8 +14,8 @@ export type ThemeChoice = "system" | "light" | "dark"
 export type LanguageChoice = "en" | "fr"
 
 const STORAGE_KEYS = {
-  theme: "fantadex.theme",
-  language: "fantadex.language",
+  theme: "sipdex.theme",
+  language: "sipdex.language",
 }
 
 const THEME_CHOICES: ThemeChoice[] = ["system", "light", "dark"]

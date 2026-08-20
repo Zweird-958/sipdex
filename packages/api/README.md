@@ -1,6 +1,6 @@
-# Fantadex — Backend
+# Sipdex — Backend
 
-REST API for **Fantadex**, an app to catalogue drink flavours from around the
+REST API for **Sipdex**, an app to catalogue drink flavours from around the
 world and track the ones you've tasted. Anyone can browse the catalogue; signed-in
 users keep a personal "tasted" list; admins curate drinks, brands, and countries.
 
@@ -67,8 +67,8 @@ Roles come from better-auth's admin plugin. New accounts default to `user`; see
 
 ## Monorepo layout
 
-This package lives at `backend/` inside the `fantadex` **pnpm workspace**. Run
-`pnpm install` once at the repo root (`fantadex/`) — it installs every package
+This package lives at `backend/` inside the `sipdex` **pnpm workspace**. Run
+`pnpm install` once at the repo root (`sipdex/`) — it installs every package
 and sets up the Git hooks. Every command below can be run either from the repo
 root (root scripts proxy to this package) or from inside `backend/`. Examples
 use the `backend/` form.
@@ -85,7 +85,7 @@ use the `backend/` form.
 ## Quick start
 
 ```bash
-# From the repo root (fantadex/): installs all packages + Git hooks
+# From the repo root (sipdex/): installs all packages + Git hooks
 pnpm install
 
 # Local config (matches the docker-compose defaults). Adjust if a port is taken.
@@ -115,16 +115,16 @@ The API is now on **http://localhost:3000** (or whatever `PORT` you set), with
 all routes under `/api`. Quick check:
 
 ```bash
-curl http://localhost:3000/            # {"name":"fantadex-backend","status":"ok"}
+curl http://localhost:3000/            # {"name":"sipdex-backend","status":"ok"}
 curl http://localhost:3000/api/drinks  # {"result":[],"meta":{}}
 ```
 
 `pnpm seed` creates two ready-to-use accounts (both password `Password123!`):
 
-| Role  | Email               |
-| ----- | ------------------- |
-| Admin | `admin@fantadex.io` |
-| User  | `user@fantadex.io`  |
+| Role  | Email             |
+| ----- | ----------------- |
+| Admin | `admin@sipdex.io` |
+| User  | `user@sipdex.io`  |
 
 Service endpoints:
 
@@ -138,7 +138,7 @@ Service endpoints:
 ### Create the storage bucket
 
 RustFS starts empty — you must create the bucket named by `S3_BUCKET_NAME`
-(`fanta-images` by default) once, and make it public-read so images load via
+(`sipdex-images` by default) once, and make it public-read so images load via
 `S3_PUBLIC_URL`. Do it whichever way you prefer; the bucket then persists in the
 `./data/rustfs` volume across restarts.
 
@@ -147,7 +147,7 @@ RustFS starts empty — you must create the bucket named by `S3_BUCKET_NAME`
 1. Open the console at **http://localhost:9001** and sign in with
    `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` (default `rustfsadmin` /
    `rustfsadmin`).
-2. Create a bucket named **`fanta-images`** (must match `S3_BUCKET_NAME`).
+2. Create a bucket named **`sipdex-images`** (must match `S3_BUCKET_NAME`).
 3. Set its access policy to **public / read-only** so objects are served
    anonymously over `S3_PUBLIC_URL`.
 
@@ -159,11 +159,11 @@ export AWS_SECRET_ACCESS_KEY=rustfsadmin
 export AWS_REGION=auto
 
 # Create the bucket
-aws --endpoint-url http://localhost:9000 s3 mb s3://fanta-images
+aws --endpoint-url http://localhost:9000 s3 mb s3://sipdex-images
 
 # Allow anonymous reads (so <S3_PUBLIC_URL>/... serves images)
 aws --endpoint-url http://localhost:9000 s3api put-bucket-policy \
-  --bucket fanta-images \
+  --bucket sipdex-images \
   --policy '{
     "Version": "2012-10-17",
     "Statement": [
@@ -172,7 +172,7 @@ aws --endpoint-url http://localhost:9000 s3api put-bucket-policy \
         "Effect": "Allow",
         "Principal": "*",
         "Action": "s3:GetObject",
-        "Resource": "arn:aws:s3:::fanta-images/*"
+        "Resource": "arn:aws:s3:::sipdex-images/*"
       }
     ]
   }'
@@ -182,8 +182,8 @@ aws --endpoint-url http://localhost:9000 s3api put-bucket-policy \
 
 ```bash
 mc alias set local http://localhost:9000 rustfsadmin rustfsadmin
-mc mb local/fanta-images
-mc anonymous set download local/fanta-images   # public read
+mc mb local/sipdex-images
+mc anonymous set download local/sipdex-images   # public read
 ```
 
 > Non-local environments: create the same bucket on your real S3 provider and
@@ -208,25 +208,25 @@ docker compose up -d && pnpm db:migrate
 
 All variables live in `.env` (see `.env.example` for the template).
 
-| Variable               | Default                               | Description                                                        |
-| ---------------------- | ------------------------------------- | ------------------------------------------------------------------ |
-| `PORT`                 | `3000`                                | Port the API listens on                                            |
-| `BASE_URL`             | `http://localhost:3000`               | Public base URL of the API                                         |
-| `DATABASE_URL`         | `postgresql://…@localhost:5439/…`     | Postgres connection string                                         |
-| `POSTGRES_USER`        | `fantadex`                            | Postgres user (used by Docker)                                     |
-| `POSTGRES_PASSWORD`    | `fantadex`                            | Postgres password (used by Docker)                                 |
-| `POSTGRES_DB`          | `fantadex`                            | Postgres database name (used by Docker)                            |
-| `POSTGRES_PORT`        | `5439`                                | Host port mapped to Postgres                                       |
-| `BETTER_AUTH_SECRET`   | —                                     | Secret for signing sessions/tokens (`openssl rand -base64 32`)     |
-| `BETTER_AUTH_URL`      | `http://localhost:3000`               | Base URL better-auth uses to build links                           |
-| `TRUSTED_ORIGINS`      | `http://localhost:3000,…`             | Comma-separated CORS / CSRF trusted origins (add your Expo scheme) |
-| `S3_PORT`              | `9000`                                | Host port mapped to the RustFS S3 API (Docker only)                |
-| `S3_CONSOLE_PORT`      | `9001`                                | Host port mapped to the RustFS web console (Docker only)           |
-| `S3_URL`               | `http://localhost:9000`               | S3 API endpoint used by the AWS SDK client                         |
-| `S3_BUCKET_NAME`       | `fanta-images`                        | Bucket for drink and brand images                                  |
-| `S3_ACCESS_KEY_ID`     | `rustfsadmin`                         | S3 access key                                                      |
-| `S3_SECRET_ACCESS_KEY` | `rustfsadmin`                         | S3 secret key                                                      |
-| `S3_PUBLIC_URL`        | `http://localhost:9000/fanta-images/` | Public base URL images are served from (trailing slash required)   |
+| Variable               | Default                                | Description                                                        |
+| ---------------------- | -------------------------------------- | ------------------------------------------------------------------ |
+| `PORT`                 | `3000`                                 | Port the API listens on                                            |
+| `BASE_URL`             | `http://localhost:3000`                | Public base URL of the API                                         |
+| `DATABASE_URL`         | `postgresql://…@localhost:5439/…`      | Postgres connection string                                         |
+| `POSTGRES_USER`        | `sipdex`                               | Postgres user (used by Docker)                                     |
+| `POSTGRES_PASSWORD`    | `sipdex`                               | Postgres password (used by Docker)                                 |
+| `POSTGRES_DB`          | `sipdex`                               | Postgres database name (used by Docker)                            |
+| `POSTGRES_PORT`        | `5439`                                 | Host port mapped to Postgres                                       |
+| `BETTER_AUTH_SECRET`   | —                                      | Secret for signing sessions/tokens (`openssl rand -base64 32`)     |
+| `BETTER_AUTH_URL`      | `http://localhost:3000`                | Base URL better-auth uses to build links                           |
+| `TRUSTED_ORIGINS`      | `http://localhost:3000,…`              | Comma-separated CORS / CSRF trusted origins (add your Expo scheme) |
+| `S3_PORT`              | `9000`                                 | Host port mapped to the RustFS S3 API (Docker only)                |
+| `S3_CONSOLE_PORT`      | `9001`                                 | Host port mapped to the RustFS web console (Docker only)           |
+| `S3_URL`               | `http://localhost:9000`                | S3 API endpoint used by the AWS SDK client                         |
+| `S3_BUCKET_NAME`       | `sipdex-images`                        | Bucket for drink and brand images                                  |
+| `S3_ACCESS_KEY_ID`     | `rustfsadmin`                          | S3 access key                                                      |
+| `S3_SECRET_ACCESS_KEY` | `rustfsadmin`                          | S3 secret key                                                      |
+| `S3_PUBLIC_URL`        | `http://localhost:9000/sipdex-images/` | Public base URL images are served from (trailing slash required)   |
 
 The environment is validated with Zod at startup ([src/env.ts](src/env.ts)); the
 server refuses to boot on invalid config.
@@ -254,7 +254,7 @@ server refuses to boot on invalid config.
 ### Git hooks
 
 A [Husky](https://typicode.github.io/husky/) **pre-commit** hook lives at the
-**repo root** (`fantadex/.husky/pre-commit`) and runs `typecheck`, Prettier
+**repo root** (`sipdex/.husky/pre-commit`) and runs `typecheck`, Prettier
 `format` check, and `lint` before every commit, blocking it if any fail. It's
 installed automatically by the root `prepare` script on `pnpm install`.
 
@@ -263,7 +263,7 @@ installed automatically by the root `prepare` script on `pnpm install`.
 ## Project structure
 
 ```
-fantadex/                         Repo root (pnpm workspace)
+sipdex/                         Repo root (pnpm workspace)
 ├── package.json                  Root orchestration scripts (proxy to packages)
 ├── pnpm-workspace.yaml           Workspace packages list
 ├── .husky/pre-commit             typecheck + format + lint gate (repo-wide)
@@ -340,12 +340,12 @@ and **bearer** plugins.
   and drinks.
   Routes enforce this via the `isAuthorized({ resource: [action] })` middleware.
 - **Roles**: new users are `user`. Get an admin either by running `pnpm seed`
-  (creates `admin@fantadex.io`) or by promoting an existing account:
+  (creates `admin@sipdex.io`) or by promoting an existing account:
 
   ```bash
   # 1. sign the account up (via the app or POST /api/auth/sign-up/email)
   # 2. promote it
-  pnpm make-admin admin@fantadex.io
+  pnpm make-admin admin@sipdex.io
   ```
 
 - **IDs**: user ids are database-generated UUIDs, so better-auth is configured
@@ -397,7 +397,7 @@ already exists.
     {
       "id": "a1b2…-uuid",
       "name": "Fanta",
-      "logoUrl": "http://localhost:9000/fanta-images/brands/fanta.png"
+      "logoUrl": "http://localhost:9000/sipdex-images/brands/fanta.png"
     }
   ],
   "meta": {}
@@ -431,11 +431,11 @@ Returns the created brand `{ id, name, logoUrl }`.
     {
       "id": "0f1c6122-…-uuid",
       "flavour": "Orange",
-      "imageUrl": "http://localhost:9000/fanta-images/drinks/orange.png",
+      "imageUrl": "http://localhost:9000/sipdex-images/fanta/orange.png",
       "brand": {
         "id": "a1b2…-uuid",
         "name": "Fanta",
-        "logoUrl": "http://localhost:9000/fanta-images/brands/fanta.png"
+        "logoUrl": "http://localhost:9000/sipdex-images/brands/fanta.png"
       },
       "countries": [
         { "id": "b3a…-uuid", "name": "Germany", "code": "DE", "createdAt": "…" }
@@ -490,7 +490,7 @@ Errors are JSON: `{ "error": "message", "key": "ERROR_KEY" }`. Keys/codes:
 
 The `./bruno` folder is a ready-made [Bruno](https://www.usebruno.com/) collection.
 
-1. Run `pnpm seed` so the admin account (`admin@fantadex.io`) exists.
+1. Run `pnpm seed` so the admin account (`admin@sipdex.io`) exists.
 2. Open `./bruno` in Bruno and select the **Local** environment. The collection
    variable `baseUrl` already includes the `/api` base path.
 3. Work through the numbered folders (Auth → Countries → Brands → Drinks → Tastings → Session).
@@ -508,7 +508,7 @@ cd bruno && npx @usebruno/cli run --env Local
 ## Notes for the Expo app
 
 - Add the app's deep-link scheme and dev origin to `TRUSTED_ORIGINS` (e.g.
-  `fantadex://`, `http://localhost:8081`).
+  `sipdex://`, `http://localhost:8081`).
 - Authenticate with bearer tokens (no cookies): read `set-auth-token` from the
   sign-in response and send `Authorization: Bearer <token>`. The
   [`@better-auth/expo`](https://better-auth.com/docs/integrations/expo) client

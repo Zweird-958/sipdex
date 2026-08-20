@@ -181,8 +181,8 @@ const main = async () => {
   await seedTastings(userIds, drinkIds)
 
   logger.info("✅ Seed complete")
-  logger.info("   Admin: admin@fantadex.io / Password123!")
-  logger.info("   User:  user@fantadex.io / Password123!")
+  logger.info("   Admin: admin@sipdex.io / Password123!")
+  logger.info("   User:  user@sipdex.io / Password123!")
 
   await pool.end()
 }

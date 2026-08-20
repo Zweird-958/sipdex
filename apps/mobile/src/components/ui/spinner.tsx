@@ -19,18 +19,14 @@ const SPIN_DURATION = 1000
 const FULL_TURN = 360
 
 export const Spinner = ({ size = 24, className }: SpinnerProps) => {
-  const rotation = useSharedValue(0)
-
-  useEffect(() => {
-    rotation.value = withRepeat(
+  const rotation = useSharedValue(
+    withRepeat(
       withTiming(FULL_TURN, { duration: SPIN_DURATION, easing: Easing.linear }),
       -1,
-    )
+    ),
+  )
 
-    return () => {
-      cancelAnimation(rotation)
-    }
-  }, [rotation])
+  useEffect(() => () => cancelAnimation(rotation), [rotation])
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotation.value}deg` }],

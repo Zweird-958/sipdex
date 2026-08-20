@@ -7,5 +7,5 @@ const configSchema = z.object({
 
 export const config = configSchema.parse({
   scheme: "mobile",
-  storagePrefix: "fantadex",
+  storagePrefix: "sipdex",
 })

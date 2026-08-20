@@ -1,4 +1,4 @@
-import type { AppType } from "@fantadex/api"
+import type { AppType } from "@sipdex/api"
 import { hc } from "hono/client"
 import { authClient } from "@/lib/auth-client"
 import { env } from "@/lib/env"
